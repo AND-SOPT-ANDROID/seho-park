@@ -1,0 +1,259 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "androidx.compose.foundation",
+    "module": "foundation",
+    "version": "1.6.6",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.4"
+    }
+  },
+  "variants": [
+    {
+      "name": "androidxSourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "androidx-multiplatform-docs"
+      },
+      "dependencyConstraints": [
+        {
+          "group": "androidx.compose.foundation",
+          "module": "foundation-layout",
+          "version": {
+            "requires": "1.6.6"
+          },
+          "reason": "foundation is in atomic group androidx.compose.foundation"
+        }
+      ],
+      "files": [
+        {
+          "name": "foundation-1.6.6-multiplatform-sources.jar",
+          "url": "foundation-1.6.6-multiplatform-sources.jar",
+          "size": 783076,
+          "sha512": "27858ea972ef3c2a97c36b3cc4837eb01a36600d7db41610e6a8a9330a343cf6490b08fdb0289bcd5e35cfaa2afc2462ad037cfa5deb563cf63014d5b40acad1",
+          "sha256": "f578e679173c644b2302b8f6a7caa1450a65f8b897c380f526e5f3cdad3d0343",
+          "sha1": "02b3fc274e7883acf9d3e1e7162519202b914d4c",
+          "md5": "188971560a33691369d3ed4fe85ea647"
+        }
+      ]
+    },
+    {
+      "name": "libraryVersionMetadata",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.usage": "library-version-metadata"
+      },
+      "dependencyConstraints": [
+        {
+          "group": "androidx.compose.foundation",
+          "module": "foundation-layout",
+          "version": {
+            "requires": "1.6.6"
+          },
+          "reason": "foundation is in atomic group androidx.compose.foundation"
+        }
+      ],
+      "files": [
+        {
+          "name": "apiLevels.json",
+          "url": "foundation-1.6.6-versionMetadata.json",
+          "size": 154152,
+          "sha512": "de6227d126ec1039a29909ac1e63c5a37e23feb542ba2a911b87da37bab2183f8b1759fb3c080a902de7dde1ba176b871105a13b71140b0b2047c1a0171c67a8",
+          "sha256": "85b982b160744a3465d9eeb3bc10988630f6340a12616f5c71013f7cdb95d633",
+          "sha1": "b5a0b6f6c701818d7a4f55ce9427b65d9817cc85",
+          "md5": "700bd7f4d5fd5b618f9669356d4ce61d"
+        }
+      ]
+    },
+    {
+      "name": "metadataApiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-metadata",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.collection",
+          "module": "collection",
+          "version": {
+            "requires": "1.4.0"
+          }
+        },
+        {
+          "group": "androidx.compose.animation",
+          "module": "animation",
+          "version": {
+            "requires": "1.6.6"
+          }
+        },
+        {
+          "group": "androidx.compose.runtime",
+          "module": "runtime",
+          "version": {
+            "requires": "1.6.6"
+          }
+        },
+        {
+          "group": "androidx.compose.ui",
+          "module": "ui",
+          "version": {
+            "requires": "1.6.6"
+          }
+        }
+      ],
+      "dependencyConstraints": [
+        {
+          "group": "androidx.compose.foundation",
+          "module": "foundation-layout",
+          "version": {
+            "requires": "1.6.6"
+          },
+          "reason": "foundation is in atomic group androidx.compose.foundation"
+        }
+      ],
+      "files": [
+        {
+          "name": "foundation-metadata-1.6.6.jar",
+          "url": "foundation-1.6.6.jar",
+          "size": 744,
+          "sha512": "641669d68fd9c81cbf406435bdb19a9b404b2576a2a84cbb130f14420a9189f91af2a64f1c3046bab297bfa45038b80956ff6477963a960081b84c14feaa8586",
+          "sha256": "548f57ae3f6aa9ec87aaac82572f225f99830ec1ece01b622721947c8fb3075d",
+          "sha1": "127b46f513500b442bf671026552f81c1c3ccf89",
+          "md5": "ca851f221fa1a846318958893c07c55f"
+        }
+      ]
+    },
+    {
+      "name": "metadataSourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "dependencyConstraints": [
+        {
+          "group": "androidx.compose.foundation",
+          "module": "foundation-layout",
+          "version": {
+            "requires": "1.6.6"
+          },
+          "reason": "foundation is in atomic group androidx.compose.foundation"
+        }
+      ],
+      "files": [
+        {
+          "name": "foundation-kotlin-1.6.6-sources.jar",
+          "url": "foundation-1.6.6-sources.jar",
+          "size": 666821,
+          "sha512": "f16bfc7c84ff699f999c701ef652ca2287aa0749a16414449d74e6a3212e768a69344dbf9e1e5fc5d8eb678f1951f01af58dd40c34848a91345277108869c845",
+          "sha256": "6a9444fd2b5a841037131b204073b0f84e3ec6a19d24ce864c17dd034a1a2c98",
+          "sha1": "bf77a1312fc508d9e1af0349d018f97ee1ded053",
+          "md5": "8c96fad4ffca88967cb62686c3e8c45b"
+        }
+      ]
+    },
+    {
+      "name": "releaseApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "available-at": {
+        "url": "../../foundation-android/1.6.6/foundation-android-1.6.6.module",
+        "group": "androidx.compose.foundation",
+        "module": "foundation-android",
+        "version": "1.6.6"
+      }
+    },
+    {
+      "name": "releaseRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "available-at": {
+        "url": "../../foundation-android/1.6.6/foundation-android-1.6.6.module",
+        "group": "androidx.compose.foundation",
+        "module": "foundation-android",
+        "version": "1.6.6"
+      }
+    },
+    {
+      "name": "releaseSourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "fake-sources",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "available-at": {
+        "url": "../../foundation-android/1.6.6/foundation-android-1.6.6.module",
+        "group": "androidx.compose.foundation",
+        "module": "foundation-android",
+        "version": "1.6.6"
+      }
+    },
+    {
+      "name": "desktopApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "available-at": {
+        "url": "../../foundation-desktop/1.6.6/foundation-desktop-1.6.6.module",
+        "group": "androidx.compose.foundation",
+        "module": "foundation-desktop",
+        "version": "1.6.6"
+      }
+    },
+    {
+      "name": "desktopRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "available-at": {
+        "url": "../../foundation-desktop/1.6.6/foundation-desktop-1.6.6.module",
+        "group": "androidx.compose.foundation",
+        "module": "foundation-desktop",
+        "version": "1.6.6"
+      }
+    },
+    {
+      "name": "desktopSourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "available-at": {
+        "url": "../../foundation-desktop/1.6.6/foundation-desktop-1.6.6.module",
+        "group": "androidx.compose.foundation",
+        "module": "foundation-desktop",
+        "version": "1.6.6"
+      }
+    }
+  ]
+}
