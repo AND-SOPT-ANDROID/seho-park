@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SignInActivity" />
-
+        <activity android:name=".MyActivity"/>
         <!-- MainActivity 정의 -->
         <activity
             android:name=".MainActivity"

@@ -1,5 +1,6 @@
 package org.sopt.and
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -66,6 +68,7 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
     var isPasswordVisible by remember { mutableStateOf(false) } // 비밀번호 가시성 상태 변수
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Scaffold(
         snackbarHost = {
@@ -126,6 +129,10 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
                     scope.launch {
                         if (email == registeredEmail && password == registeredPassword) {
                             snackbarHostState.showSnackbar("로그인 성공!")
+
+                            val intent = Intent(context, MyActivity::class.java).apply {
+                                putExtra("email", email)  // email 정보 전달
+                            }
                         } else {
                             snackbarHostState.showSnackbar("로그인 실패: 이메일과 비밀번호를 확인해주세요.")
                         }
