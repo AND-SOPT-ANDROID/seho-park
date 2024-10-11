@@ -1,5 +1,6 @@
 package org.sopt.and
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -29,6 +30,9 @@ class SignUpActivity : ComponentActivity() {
             ANDANDROIDTheme {
                 SignUp(
                     onSignUpSuccess = {
+                        // 회원가입 성공 시 로그인 화면으로 전환
+                        val intent = Intent(this, SignInActivity::class.java)
+                        startActivity(intent)
                         Toast.makeText(application, "회원가입 성공!", Toast.LENGTH_SHORT).show()
                     },
                     onSignUpFailure = {
@@ -108,7 +112,7 @@ fun signUpView(onSignUpSuccess: () -> Unit, onSignUpFailure: () -> Unit) {
             value = email,
             onValueChange = {
                 email = it
-                emailError = !validateEmail(it)
+                emailError = !validateEmail(it) // 여기서 이메일 유효성 검사 바로 수행
             },
             label = { Text(text = "wavve@example.com", color = Color.DarkGray) },
             singleLine = true,
