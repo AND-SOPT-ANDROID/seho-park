@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,22 @@ import kotlinx.coroutines.launch
 import org.sopt.and.ui.theme.ANDANDROIDTheme
 
 class SignInActivity : ComponentActivity() {
+    val signUpLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // 회원가입 완료 후 결과 처리 (email, password 받기)
+            val email = result.data?.getStringExtra("email") ?: ""
+            val password = result.data?.getStringExtra("password") ?: ""
+            // 받은 email과 password를 로그인에 반영
+            setContent {
+                ANDANDROIDTheme {
+                    SignIn(email, password)
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -64,8 +81,8 @@ fun LoginHeader(){
 
 @Composable
 fun SignIn(registeredEmail: String, registeredPassword: String) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf(registeredEmail) }
+    var password by remember { mutableStateOf(registeredPassword) }
     var isPasswordVisible by remember { mutableStateOf(false) } // 비밀번호 가시성 상태 변수
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -175,19 +192,13 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "|",
-                    fontSize = 15.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-                Text(
                     text = "회원가입",
                     fontSize = 15.sp,
                     color = Color.White,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.clickable {
-                        val intent = Intent(context, SignUpActivity::class.java).apply {}
-                        context.startActivity(intent)  // Activity 시작
+                        val intent = Intent(context, SignUpActivity::class.java)
+                        (context as SignInActivity).signUpLauncher.launch(intent) // registerForActivityResult로 SignUpActivity 시작
                     }
                 )
             }
@@ -199,6 +210,6 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
 @Composable
 fun SignInPreview() {
     ANDANDROIDTheme {
-        SignIn("323psh@naver.com", "test1234@")
+        SignIn("example@example.com", "password123")
     }
 }
