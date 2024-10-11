@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -50,6 +51,7 @@ class SignUpActivity : ComponentActivity() {
 
 @Composable
 fun Header() {
+    val context = LocalContext.current
     Spacer(modifier = Modifier.height(50.dp))
     Box(
         modifier = Modifier
@@ -68,7 +70,10 @@ fun Header() {
             text = "x",
             fontSize = 15.sp,
             color = Color.White,
-            modifier = Modifier.align(Alignment.CenterEnd)
+            modifier = Modifier.align(Alignment.CenterEnd).clickable {
+                val intent = Intent(context, SignInActivity::class.java)
+                context.startActivity(intent)
+            }
         )
     }
 }
@@ -202,6 +207,7 @@ fun SignUpView(onSignUpSuccess: (String, String) -> Unit, onSignUpFailure: () ->
 
 @Composable
 fun SignUp(onSignUpSuccess: (String, String) -> Unit, onSignUpFailure: () -> Unit) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()

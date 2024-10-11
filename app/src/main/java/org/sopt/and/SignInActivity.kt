@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -129,10 +130,11 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
                     scope.launch {
                         if (email == registeredEmail && password == registeredPassword) {
                             snackbarHostState.showSnackbar("로그인 성공!")
-
                             val intent = Intent(context, MyActivity::class.java).apply {
                                 putExtra("email", email)  // email 정보 전달
                             }
+                            context.startActivity(intent)  // Activity 시작
+
                         } else {
                             snackbarHostState.showSnackbar("로그인 실패: 이메일과 비밀번호를 확인해주세요.")
                         }
@@ -182,7 +184,11 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
                     text = "회원가입",
                     fontSize = 15.sp,
                     color = Color.White,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.clickable {
+                        val intent = Intent(context, SignUpActivity::class.java).apply {}
+                        context.startActivity(intent)  // Activity 시작
+                    }
                 )
             }
         }
@@ -193,6 +199,6 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
 @Composable
 fun SignInPreview() {
     ANDANDROIDTheme {
-        SignIn("example@example.com", "password123")
+        SignIn("323psh@naver.com", "test1234@")
     }
 }
