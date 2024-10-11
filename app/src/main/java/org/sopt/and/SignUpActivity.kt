@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -29,9 +30,12 @@ class SignUpActivity : ComponentActivity() {
         setContent {
             ANDANDROIDTheme {
                 SignUp(
-                    onSignUpSuccess = {
+                    onSignUpSuccess = { email, password ->
                         // 회원가입 성공 시 로그인 화면으로 전환
-                        val intent = Intent(this, SignInActivity::class.java)
+                        val intent = Intent(this, SignInActivity::class.java).apply {
+                            putExtra("email", email)
+                            putExtra("password", password)
+                        }
                         startActivity(intent)
                         Toast.makeText(application, "회원가입 성공!", Toast.LENGTH_SHORT).show()
                     },
@@ -45,7 +49,7 @@ class SignUpActivity : ComponentActivity() {
 }
 
 @Composable
-fun header() {
+fun Header() {
     Spacer(modifier = Modifier.height(50.dp))
     Box(
         modifier = Modifier
@@ -70,7 +74,7 @@ fun header() {
 }
 
 @Composable
-fun signUpView(onSignUpSuccess: () -> Unit, onSignUpFailure: () -> Unit) {
+fun SignUpView(onSignUpSuccess: (String, String) -> Unit, onSignUpFailure: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
@@ -112,7 +116,7 @@ fun signUpView(onSignUpSuccess: () -> Unit, onSignUpFailure: () -> Unit) {
             value = email,
             onValueChange = {
                 email = it
-                emailError = !validateEmail(it) // 여기서 이메일 유효성 검사 바로 수행
+                emailError = !validateEmail(it) // 이메일 유효성 검사
             },
             label = { Text(text = "wavve@example.com", color = Color.DarkGray) },
             singleLine = true,
@@ -122,7 +126,6 @@ fun signUpView(onSignUpSuccess: () -> Unit, onSignUpFailure: () -> Unit) {
             )
         )
 
-        // 이메일 에러 메시지
         Text(
             text = "로그인, 비밀번호 찾기, 알림에 사용되니 정확한 이메일을 입력해 주세요.",
             fontSize = 10.sp,
@@ -164,7 +167,6 @@ fun signUpView(onSignUpSuccess: () -> Unit, onSignUpFailure: () -> Unit) {
             }
         }
 
-        // 비밀번호 에러 메시지
         Text(
             text = "비밀번호는 8~20자 이내로, 영문 대소문자, 숫자, 특수문자 중 3가지 이상 혼용해야 합니다.",
             fontSize = 10.sp,
@@ -178,7 +180,7 @@ fun signUpView(onSignUpSuccess: () -> Unit, onSignUpFailure: () -> Unit) {
         TextButton(
             onClick = {
                 if (!emailError && !passwordError && email.isNotEmpty() && password.isNotEmpty()) {
-                    onSignUpSuccess()
+                    onSignUpSuccess(email, password)
                 } else {
                     onSignUpFailure()
                 }
@@ -199,14 +201,14 @@ fun signUpView(onSignUpSuccess: () -> Unit, onSignUpFailure: () -> Unit) {
 }
 
 @Composable
-fun SignUp(onSignUpSuccess: () -> Unit, onSignUpFailure: () -> Unit) {
+fun SignUp(onSignUpSuccess: (String, String) -> Unit, onSignUpFailure: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        header()
-        signUpView(onSignUpSuccess, onSignUpFailure)
+        Header()
+        SignUpView(onSignUpSuccess, onSignUpFailure)
         Text(
             text = "또는 다른 서비스 계정으로 가입",
             fontSize = 10.sp,
@@ -244,6 +246,6 @@ fun validatePassword(password: String): Boolean {
 @Composable
 fun SignUpPreview() {
     ANDANDROIDTheme {
-        SignUp(onSignUpSuccess = {}, onSignUpFailure = {})
+        SignUp(onSignUpSuccess = { _, _ -> }, onSignUpFailure = {})
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import org.sopt.and.ui.theme.ANDANDROIDTheme
 
 class SignInActivity : ComponentActivity() {
@@ -25,15 +26,17 @@ class SignInActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ANDANDROIDTheme {
-                SignIn()
+                val email = intent.getStringExtra("email") ?: ""
+                val password = intent.getStringExtra("password") ?: ""
+                SignIn(email, password)
             }
         }
     }
 }
 
 @Composable
-fun SignInHeader() {
-    Spacer(modifier = Modifier.height(20.dp))
+fun LoginHeader(){
+    Spacer(modifier = Modifier.height(80.dp))
     Box(
         modifier = Modifier
             .background(Color.Black)
@@ -47,90 +50,135 @@ fun SignInHeader() {
             modifier = Modifier.align(Alignment.CenterStart)
         )
         Text(
+            modifier = Modifier.align(Alignment.Center),
             text = "Wavve",
             fontSize = 20.sp,
             color = Color.White,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.align(Alignment.Center)
+            textAlign = TextAlign.Center
         )
     }
 }
 
 @Composable
-fun SignInView() {
-    // 상태 변수 정의
-    var id by remember { mutableStateOf("") }
+fun SignIn(registeredEmail: String, registeredPassword: String) {
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isPasswordVisible by remember { mutableStateOf(false) }
+    var isPasswordVisible by remember { mutableStateOf(false) } // 비밀번호 가시성 상태 변수
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)
-    ) {
-        // 아이디 입력 필드
-        Spacer(modifier = Modifier.height(50.dp))
-
-        TextField(
-            value = id,
-            onValueChange = { id = it },
-            label = { Text(text = "이메일 주소 또는 아이디", color = Color.DarkGray) },
-            singleLine = true,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Gray,
-                unfocusedContainerColor = Color.Gray
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(5.dp))
-
-        // 비밀번호 입력 필드
-        TextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text(text = "비밀번호", color = Color.DarkGray) },
-            singleLine = true,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Gray,
-                unfocusedContainerColor = Color.Gray
-            ),
-            placeholder = { Text("Wavve 비밀번호 설정") },
-            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                TextButton(onClick = {
-                    isPasswordVisible = !isPasswordVisible
-                }) {
-                    Text(text = if (isPasswordVisible) "Hide" else "Show", color = Color.White)
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        // 로그인 버튼
-        Button(
-            onClick = { /* 로그인 로직 추가 */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
-        ) {
-            Text(text = "로그인", color = Color.White, fontSize = 16.sp)
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         }
-    }
-}
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .padding(15.dp)
+        ) {
+            LoginHeader()
 
-@Composable
-fun SignIn() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-    ) {
-        SignInHeader()
-        SignInView()
+            // 아이디 입력 필드
+            TextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text(text = "이메일 주소 또는 아이디") },
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Gray,
+                    unfocusedContainerColor = Color.Gray
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(paddingValues)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // 비밀번호 입력 필드
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text(text = "비밀번호") },
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Gray,
+                    unfocusedContainerColor = Color.Gray
+                ),
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(), // 비밀번호 가시성 설정
+                trailingIcon = {
+                    TextButton(onClick = {
+                        isPasswordVisible = !isPasswordVisible // 가시성 토글
+                    }) {
+                        Text(text = if (isPasswordVisible) "Hide" else "Show", color = Color.White)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 로그인 버튼
+            Button(
+                onClick = {
+                    scope.launch {
+                        if (email == registeredEmail && password == registeredPassword) {
+                            snackbarHostState.showSnackbar("로그인 성공!")
+                        } else {
+                            snackbarHostState.showSnackbar("로그인 실패: 이메일과 비밀번호를 확인해주세요.")
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
+            ) {
+                Text(text = "로그인", color = Color.White)
+            }
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(40.dp),
+                horizontalArrangement = Arrangement.SpaceBetween // 좌우로 균등하게 배치
+            ) {
+                Text(
+                    text = "아이디 찾기",
+                    fontSize = 15.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "|",
+                    fontSize = 15.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "비밀번호 재설정",
+                    fontSize = 15.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "|",
+                    fontSize = 15.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "회원가입",
+                    fontSize = 15.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }
 
@@ -138,6 +186,6 @@ fun SignIn() {
 @Composable
 fun SignInPreview() {
     ANDANDROIDTheme {
-        SignIn()
+        SignIn("example@example.com", "password123")
     }
 }
