@@ -15,13 +15,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.test.platform.tracing.Tracer.Span
 import org.sopt.and.ui.theme.ANDANDROIDTheme
 
 class SignUpActivity : ComponentActivity() {
@@ -33,9 +37,12 @@ class SignUpActivity : ComponentActivity() {
                 SignUp(
                     onSignUpSuccess = { email, password ->
                         // 회원가입 성공 시 로그인 화면으로 전환
+                        val bundle = Bundle().apply {
+                            putString("email", email)
+                            putString("password", password)
+                        }
                         val intent = Intent(this, SignInActivity::class.java).apply {
-                            putExtra("email", email)
-                            putExtra("password", password)
+                            putExtras(bundle)
                         }
                         startActivity(intent)
                         Toast.makeText(application, "회원가입 성공!", Toast.LENGTH_SHORT).show()
@@ -85,7 +92,23 @@ fun SignUpView(onSignUpSuccess: (String, String) -> Unit, onSignUpFailure: () ->
     var isPasswordVisible by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf(false) }
-
+    val validator = PasswordValidator()
+    val firstText = AnnotatedString.Builder().apply {
+        withStyle(style = SpanStyle(color = Color.White)) {
+            append("이메일과 비밀번호")
+        }
+        withStyle(style = SpanStyle(color = Color.Gray)) {
+            append("만으로")
+        }
+    }.toAnnotatedString()
+    val secondText = AnnotatedString.Builder().apply {
+        withStyle(style = SpanStyle(color = Color.White)) {
+            append("Wavve를 즐길 수")
+        }
+        withStyle(style = SpanStyle(color = Color.Gray)) {
+            append(" 있어요!")
+        }
+    }.toAnnotatedString()
     Column(
         modifier = Modifier
             .background(Color.Black)
@@ -97,17 +120,15 @@ fun SignUpView(onSignUpSuccess: (String, String) -> Unit, onSignUpFailure: () ->
                 .padding(start = 15.dp, top = 30.dp, end = 15.dp)
         ) {
             Text(
-                text = "이메일과 비밀번호 만으로",
-                fontSize = 28.sp,
+                text = firstText,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.White
             )
 
             Text(
-                text = "Wavve를 즐길 수 있어요",
-                fontSize = 28.sp,
+                text = secondText,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.White
             )
         }
 
@@ -149,7 +170,7 @@ fun SignUpView(onSignUpSuccess: (String, String) -> Unit, onSignUpFailure: () ->
                 value = password,
                 onValueChange = {
                     password = it
-                    passwordError = !validatePassword(it)
+                    passwordError = !validator.validatePassword(it)
                 },
                 label = { Text(text = "Wavve 비밀번호 설정", color = Color.DarkGray) },
                 singleLine = true,
@@ -231,21 +252,30 @@ fun validateEmail(email: String): Boolean {
 }
 
 // 비밀번호 유효성 검사 함수
-fun validatePassword(password: String): Boolean {
-    if (password.length !in 8..20) return false
-    val lowerCaseRegex = Regex("[a-z]")
-    val upperCaseRegex = Regex("[A-Z]")
-    val digitRegex = Regex("[0-9]")
-    val specialRegex = Regex("[!@#\$%^&*(),.?\\\":{}|<>]")
+class PasswordValidator {
+    companion object {
+        const val MIN_PASSWORD_LENGTH = 8
+        const val MAX_PASSWORD_LENGTH = 20
+    }
 
-    val criteriaCnt = listOf(
-        lowerCaseRegex.containsMatchIn(password),
-        upperCaseRegex.containsMatchIn(password),
-        digitRegex.containsMatchIn(password),
-        specialRegex.containsMatchIn(password)
-    ).count { it }
+    // 비밀번호 유효성 검사 함수
+    fun validatePassword(password: String): Boolean {
+        if (password.length !in MIN_PASSWORD_LENGTH..MAX_PASSWORD_LENGTH) return false
 
-    return criteriaCnt >= 3
+        val lowerCaseRegex = Regex("[a-z]")
+        val upperCaseRegex = Regex("[A-Z]")
+        val digitRegex = Regex("[0-9]")
+        val specialRegex = Regex("[!@#\$%^&*(),.?\\\":{}|<>]")
+
+        val criteriaCnt = listOf(
+            lowerCaseRegex.containsMatchIn(password),
+            upperCaseRegex.containsMatchIn(password),
+            digitRegex.containsMatchIn(password),
+            specialRegex.containsMatchIn(password)
+        ).count { it }
+
+        return criteriaCnt >= 3
+    }
 }
 
 @Preview(showBackground = true)
