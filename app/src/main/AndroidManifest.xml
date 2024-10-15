@@ -12,17 +12,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ANDANDROID"
         tools:targetApi="31">
-        <activity
-            android:name=".MainActivity"
+
+        <activity android:name=".SignInActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.ANDANDROID">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        <activity android:name=".SignUpActivity" />
+        <activity android:name=".MyActivity"/>
+        <!-- MainActivity 정의 -->
+<!--        <activity-->
+<!--            android:name=".MainActivity"-->
+<!--            android:exported="true"-->
+<!--            android:label="@string/app_name"-->
+<!--            android:theme="@style/Theme.ANDANDROID">-->
+<!--        </activity>-->
 
+    </application>
 </manifest>
