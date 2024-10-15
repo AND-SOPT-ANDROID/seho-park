@@ -1,5 +1,6 @@
 package org.sopt.and
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -25,16 +27,16 @@ import kotlinx.coroutines.launch
 import org.sopt.and.ui.theme.ANDANDROIDTheme
 
 class SignInActivity : ComponentActivity() {
+    // signUpLauncher를 통해 결과 값을 받아 처리
     val signUpLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
-            // 회원가입 완료 후 결과 처리 (email, password 받기)
             val email = result.data?.getStringExtra("email") ?: ""
             val password = result.data?.getStringExtra("password") ?: ""
-            // 받은 email과 password를 로그인에 반영
             setContent {
                 ANDANDROIDTheme {
+                    // 상태 변경 반영
                     SignIn(email, password)
                 }
             }
@@ -46,16 +48,18 @@ class SignInActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ANDANDROIDTheme {
-                val email = intent.getStringExtra("email") ?: ""
-                val password = intent.getStringExtra("password") ?: ""
+                val email = intent.getStringExtra("email").orEmpty()
+                val password = intent.getStringExtra("password").orEmpty()
                 SignIn(email, password)
             }
         }
     }
 }
 
+
 @Composable
 fun LoginHeader(){
+    val context = LocalContext.current as? Activity
     Spacer(modifier = Modifier.height(80.dp))
     Box(
         modifier = Modifier
@@ -67,7 +71,11 @@ fun LoginHeader(){
             text = "<",
             fontSize = 15.sp,
             color = Color.White,
-            modifier = Modifier.align(Alignment.CenterStart)
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .clickable {
+                    context?.finish()
+                }
         )
         Text(
             modifier = Modifier.align(Alignment.Center),
@@ -86,7 +94,7 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
     var isPasswordVisible by remember { mutableStateOf(false) } // 비밀번호 가시성 상태 변수
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
+    val context = LocalContext.current as? Activity
 
     Scaffold(
         snackbarHost = {
@@ -105,7 +113,7 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
             TextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text(text = "이메일 주소 또는 아이디") },
+                label = { Text(text = stringResource(id = R.string.email_label))},
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Gray,
@@ -122,7 +130,7 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
             TextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text(text = "비밀번호") },
+                label = { Text(text = stringResource(id = R.string.password_label)) },
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Gray,
@@ -140,8 +148,6 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
             )
 
             Spacer(modifier = Modifier.height(20.dp))
-
-            // 로그인 버튼
             Button(
                 onClick = {
                     scope.launch {
@@ -150,7 +156,7 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
                             val intent = Intent(context, MyActivity::class.java).apply {
                                 putExtra("email", email)  // email 정보 전달
                             }
-                            context.startActivity(intent)  // Activity 시작
+                            context?.startActivity(intent)  // Activity 시작
 
                         } else {
                             snackbarHostState.showSnackbar("로그인 실패: 이메일과 비밀번호를 확인해주세요.")
@@ -162,7 +168,7 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
             ) {
-                Text(text = "로그인", color = Color.White)
+                Text(text = stringResource(id = R.string.login_label), color = Color.White)
             }
 
             Spacer(modifier = Modifier.height(5.dp))
@@ -174,31 +180,37 @@ fun SignIn(registeredEmail: String, registeredPassword: String) {
                 horizontalArrangement = Arrangement.SpaceBetween // 좌우로 균등하게 배치
             ) {
                 Text(
-                    text = "아이디 찾기",
+                    text = stringResource(id = R.string.find_id_label),
                     fontSize = 15.sp,
                     color = Color.White,
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "|",
+                    text = stringResource(id = R.string.separator),
                     fontSize = 15.sp,
                     color = Color.White,
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "비밀번호 재설정",
+                    text = stringResource(id = R.string.reset_pw_label),
                     fontSize = 15.sp,
                     color = Color.White,
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "회원가입",
+                    text = stringResource(id = R.string.separator),
+                    fontSize = 15.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = stringResource(id = R.string.sign_up_label),
                     fontSize = 15.sp,
                     color = Color.White,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.clickable {
                         val intent = Intent(context, SignUpActivity::class.java)
-                        (context as SignInActivity).signUpLauncher.launch(intent) // registerForActivityResult로 SignUpActivity 시작
+                        (context as SignInActivity).signUpLauncher.launch(intent)
                     }
                 )
             }

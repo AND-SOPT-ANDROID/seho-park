@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">AND-ANDROID</string>
+    <string name="email_label">이메일 주소 또는 아이디</string>
+    <string name="password_label">비밀번호</string>
+    <string name="login_label">로그인</string>
+    <string name="separator">|</string>
+    <string name="find_id_label">아이디 찾기</string>
+    <string name="reset_pw_label">비밀번호 재설정</string>
+    <string name="sign_up_label">회원가입</string>
 </resources>
