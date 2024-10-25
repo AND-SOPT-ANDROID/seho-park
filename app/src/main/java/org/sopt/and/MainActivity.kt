@@ -9,12 +9,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.sopt.and.navigation.AuthNavItem
+import org.sopt.and.navigation.SignNavigation
 import org.sopt.and.signup.SignUpScreen
 
 import org.sopt.and.signin.SignInScreen
 
 import org.sopt.and.ui.theme.ANDANDROIDTheme
+import org.sopt.and.viewmodel.SignViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,28 +23,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ANDANDROIDTheme {
-                val signUpViewModel: SignUpViewModel = viewModel()
-                MyApp(signUpViewModel)
+                val signViewModel: SignViewModel = viewModel()
+                MyApp(signViewModel)
             }
         }
     }
 }
 
 @Composable
-fun MyApp(signUpViewModel: SignUpViewModel) {
+fun MyApp(signViewModel: SignViewModel) {
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = AuthNavItem.SignUp.route) {
-        composable(AuthNavItem.SignUp.route) {
-            SignUpScreen(signUpViewModel = signUpViewModel, navController = navController)
+    NavHost(navController, startDestination = SignNavigation.SignUp.route) {
+        composable(SignNavigation.SignUp.route) {
+            SignUpScreen(signViewModel = signViewModel, navController = navController)
         }
 
-        composable(AuthNavItem.SignIn.route) {
-            SignInScreen(signUpViewModel = signUpViewModel, navController = navController)
+        composable(SignNavigation.SignIn.route) {
+            SignInScreen(signUpViewModel = signViewModel, navController = navController)
         }
 
-        composable(AuthNavItem.Main.route) {
-            MainScreen(signUpViewModel = signUpViewModel)
+        composable(SignNavigation.Main.route) {
+            MainScreen(signUpViewModel = signViewModel)
         }
 
     }
