@@ -7,9 +7,11 @@ import androidx.navigation.compose.composable
 import org.sopt.and.home.HomeScreen
 import org.sopt.and.myinfo.MyScreen
 import org.sopt.and.search.SearchScreen
+import org.sopt.and.viewmodel.SignViewModel
+
 
 @Composable
-fun BottomNavigationGraph(navController: NavHostController, signUpViewModel: SignUpViewModel) {
+fun BottomNavigationGraph(navController: NavHostController, signViewModel: SignViewModel) {
     NavHost(navController = navController, startDestination = BottomNavigation.Home.route) {
         composable(route = BottomNavigation.Home.route) {
             HomeScreen()
@@ -18,7 +20,7 @@ fun BottomNavigationGraph(navController: NavHostController, signUpViewModel: Sig
             SearchScreen()
         }
         composable(route = BottomNavigation.MY.route) {
-            MyScreen(signUpViewModel = signUpViewModel)
+            MyScreen(signViewModel = signViewModel)
         }
     }
 }

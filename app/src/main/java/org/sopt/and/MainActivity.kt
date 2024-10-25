@@ -40,11 +40,11 @@ fun MyApp(signViewModel: SignViewModel) {
         }
 
         composable(SignNavigation.SignIn.route) {
-            SignInScreen(signUpViewModel = signViewModel, navController = navController)
+            SignInScreen(signViewModel = signViewModel, navController = navController)
         }
 
         composable(SignNavigation.Main.route) {
-            MainScreen(signUpViewModel = signViewModel)
+            MainScreen(signViewModel = signViewModel)
         }
 
     }
