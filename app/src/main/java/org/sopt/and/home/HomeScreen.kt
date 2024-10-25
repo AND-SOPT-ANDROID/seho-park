@@ -1,12 +1,13 @@
 package org.sopt.and.home
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,8 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.sopt.and.R
 
-// 상수 정의
-val moviePosters = List(9) { R.drawable.film_poster_dummy }
+val Posters = List(9) { R.drawable.bee }
 val categories = listOf("뉴클래식", "드라마", "예능", "영화", "애니", "해외시리즈")
 val textColor = Color.White
 val categoryColor = Color.Gray
@@ -39,18 +39,21 @@ fun HomeScreen() {
             CategoryRow(categories = categories)
         }
         item {
-            Section(title = R.string.homeview_wave_editor_recommendation) {
-                PosterRow(moviePosters = moviePosters, itemComposable = { RecommendPosterItem(it) })
+            Section(title = R.string.recommendation_label) {
+                PosterRow(moviePosters = Posters, itemComposable = { poster, _ -> RecommendPosterItem(poster) })
             }
         }
         item {
-            Section(title = R.string.homeview_today_top_20) {
-                PosterRow(moviePosters = moviePosters, itemComposable = { TopPosterItem(it) })
+            Section(title = R.string.ranking_label) {
+                PosterRow(moviePosters = Posters, itemComposable = { poster, rank -> rank?.let {
+                    TopPosterItem(poster,
+                        it
+                    )
+                } })
             }
         }
     }
 }
-
 @Composable
 fun CategoryRow(categories: List<String>) {
     LazyRow(
@@ -79,13 +82,13 @@ fun Section(@StringRes title: Int, content: @Composable () -> Unit) {
 }
 
 @Composable
-fun PosterRow(moviePosters: List<Int>, itemComposable: @Composable (Int) -> Unit) {
+fun PosterRow(moviePosters: List<Int>, itemComposable: @Composable (Int, Int?) -> Unit) {
     LazyRow(
         contentPadding = PaddingValues(15.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(moviePosters.size) { index ->
-            itemComposable(moviePosters[index])
+            itemComposable(moviePosters[index], index + 1)
         }
     }
 }
@@ -101,7 +104,7 @@ fun RecommendPosterItem(posterItem: Int) {
 }
 
 @Composable
-fun TopPosterItem(posterItem: Int) {
+fun TopPosterItem(posterItem: Int, rank: Int) {
     Box(
         modifier = Modifier.size(170.dp, 255.dp)
     ) {

@@ -7,16 +7,17 @@ import androidx.lifecycle.ViewModel
 
 class SignViewModel : ViewModel() {
 
-    // 로그인 및 회원가입 관련 변수
     var email by mutableStateOf("")
     var password by mutableStateOf("")
     var isPasswordVisible by mutableStateOf(false)
 
-    // 오류 메시지
     var emailError by mutableStateOf("")
     var passwordError by mutableStateOf("")
 
-    object Constants {
+    private val savedEmail = "user@example.com" // Mock email for sign-in validation
+    private val savedPassword = "password123"   // Mock password for sign-in validation
+
+    companion object Constants {
         const val MIN_PASSWORD_LENGTH = 8
         const val MAX_PASSWORD_LENGTH = 20
         const val PASSWORD_CRITERIA_COUNT = 3
@@ -30,69 +31,51 @@ class SignViewModel : ViewModel() {
         val SPECIAL_REGEX = Regex("[!@#\$%^&*(),.?\\\":{}|<>]")
     }
 
-    /**
-     * 이메일과 비밀번호 유효성 검사
-     */
+    /** Validates both email and password */
     fun validateSignInOrUp(): Boolean {
-        return isEmailValid(email) && isPasswordValid(password)
+        return isEmailValid() && isPasswordValid()
     }
 
-
-    private fun isEmailValid(email: String): Boolean {
-        emailError = if (email.isEmpty()) {
-            "이메일을 입력하세요."
-        } else if (!RegexConstants.EMAIL_REGEX.matches(email)) {
-            "이메일 형식이 올바르지 않습니다."
-        } else {
-            ""
+    /** Checks email validity and sets error message if invalid */
+    private fun isEmailValid(): Boolean {
+        emailError = when {
+            email.isEmpty() -> "이메일을 입력하세요."
+            !RegexConstants.EMAIL_REGEX.matches(email) -> "이메일 형식이 올바르지 않습니다."
+            else -> ""
         }
         return emailError.isEmpty()
     }
 
-
-    private fun isPasswordValid(password: String): Boolean {
-        if (password.isEmpty()) {
-            passwordError = "비밀번호를 입력하세요."
-            return false
-        }
-
-        if (password.length !in Constants.MIN_PASSWORD_LENGTH..Constants.MAX_PASSWORD_LENGTH) {
-            passwordError = "비밀번호는 ${Constants.MIN_PASSWORD_LENGTH}-${Constants.MAX_PASSWORD_LENGTH}자여야 합니다."
-            return false
-        }
-
-        val hasLowerCase = RegexConstants.LOWER_CASE_REGEX.containsMatchIn(password)
-        val hasUpperCase = RegexConstants.UPPER_CASE_REGEX.containsMatchIn(password)
-        val hasDigit = RegexConstants.DIGIT_REGEX.containsMatchIn(password)
-        val hasSpecialChar = RegexConstants.SPECIAL_REGEX.containsMatchIn(password)
-
-        val criteriaCount = listOf(hasLowerCase, hasUpperCase, hasDigit, hasSpecialChar).count { it }
-
-        passwordError = if (criteriaCount >= Constants.PASSWORD_CRITERIA_COUNT) {
-            ""
-        } else {
-            "비밀번호는 영문 대소문자, 숫자, 특수문자 중 3가지 이상을 포함해야 합니다."
+    /** Checks password validity based on length and complexity */
+    private fun isPasswordValid(): Boolean {
+        passwordError = when {
+            password.isEmpty() -> "비밀번호를 입력하세요."
+            password.length !in MIN_PASSWORD_LENGTH..MAX_PASSWORD_LENGTH ->
+                "비밀번호는 $MIN_PASSWORD_LENGTH-${MAX_PASSWORD_LENGTH}자여야 합니다."
+            !hasSufficientComplexity(password) ->
+                "비밀번호는 영문 대소문자, 숫자, 특수문자 중 3가지 이상을 포함해야 합니다."
+            else -> ""
         }
         return passwordError.isEmpty()
     }
 
-    /**
-     * 로그인 시 이메일과 비밀번호 일치 여부 확인
-     */
-
-
-    var emailSignIn by mutableStateOf("")
-    var passwordSignIn by mutableStateOf("")
-    var savedEmail: String = "user@example.com" // Mock email
-    var savedPassword: String = "password123"    // Mock password
-
-    fun validateSignIn(): Boolean {
-        return emailSignIn == savedEmail && passwordSignIn == savedPassword
+    /** Helper to check for required character complexity in the password */
+    private fun hasSufficientComplexity(password: String): Boolean {
+        val criteriaCount = listOf(
+            RegexConstants.LOWER_CASE_REGEX.containsMatchIn(password),
+            RegexConstants.UPPER_CASE_REGEX.containsMatchIn(password),
+            RegexConstants.DIGIT_REGEX.containsMatchIn(password),
+            RegexConstants.SPECIAL_REGEX.containsMatchIn(password)
+        ).count { it }
+        return criteriaCount >= PASSWORD_CRITERIA_COUNT
     }
 
-    /**
-     * 이메일과 비밀번호 설정
-     */
+    /** Checks if entered email and password match saved credentials */
+    fun validateSignIn(): Boolean {
+        return email == savedEmail && password == savedPassword
+    }
+
+    /** Sets email and password when signing up */
     fun setEmailAndPassword(email: String, password: String) {
         this.email = email
         this.password = password

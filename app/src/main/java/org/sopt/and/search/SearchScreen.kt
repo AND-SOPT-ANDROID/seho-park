@@ -20,10 +20,8 @@ fun SearchScreen() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Search Screen",
-            fontSize = 50.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Yellow
+            text = "Search",
+            fontSize = 10.sp,
         )
     }
 }
