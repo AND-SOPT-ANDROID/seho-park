@@ -38,6 +38,10 @@ fun HomeScreen() {
         item {
             CategoryRow(categories = categories)
         }
+
+        item {
+            BannerView()
+        }
         item {
             Section(title = R.string.recommendation_label) {
                 PosterRow(moviePosters = Posters, itemComposable = { poster, _ -> RecommendPosterItem(poster) })
@@ -54,6 +58,9 @@ fun HomeScreen() {
         }
     }
 }
+
+
+
 @Composable
 fun CategoryRow(categories: List<String>) {
     LazyRow(
@@ -82,6 +89,33 @@ fun Section(@StringRes title: Int, content: @Composable () -> Unit) {
 }
 
 @Composable
+fun BannerView() {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(400.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        items(5) { index ->
+            Box(
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(400.dp)
+                    .background(Color.DarkGray)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.bee),
+                    contentDescription = "Banner Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun PosterRow(moviePosters: List<Int>, itemComposable: @Composable (Int, Int?) -> Unit) {
     LazyRow(
         contentPadding = PaddingValues(15.dp),
@@ -92,6 +126,8 @@ fun PosterRow(moviePosters: List<Int>, itemComposable: @Composable (Int, Int?) -
         }
     }
 }
+
+
 
 @Composable
 fun RecommendPosterItem(posterItem: Int) {
