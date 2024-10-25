@@ -48,7 +48,8 @@ class SignUpActivity : ComponentActivity() {
                         Toast.makeText(application, "회원가입 성공!", Toast.LENGTH_SHORT).show()
                     },
                     onSignUpFailure = {
-                        Toast.makeText(application, "회원가입 실패: 입력 정보를 확인해주세요.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(application, "회원가입 실패: 입력 정보를 확인해주세요.", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 )
             }
@@ -77,10 +78,12 @@ fun Header() {
             text = "x",
             fontSize = 15.sp,
             color = Color.White,
-            modifier = Modifier.align(Alignment.CenterEnd).clickable {
-                val intent = Intent(context, SignInActivity::class.java)
-                context.startActivity(intent)
-            }
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable {
+                    val intent = Intent(context, SignInActivity::class.java)
+                    context.startActivity(intent)
+                }
         )
     }
 }
