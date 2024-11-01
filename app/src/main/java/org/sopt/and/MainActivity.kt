@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -36,17 +37,25 @@ fun MyApp(signViewModel: SignViewModel) {
 
     NavHost(navController, startDestination = SignNavigation.SignUp.route) {
         composable(SignNavigation.SignUp.route) {
-            SignUpScreen(signViewModel = signViewModel, navController = navController)
+            SignUpScreen(
+                signViewModel = signViewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToSignIn = { navController.navigate("signIn") },
+            )
         }
-
         composable(SignNavigation.SignIn.route) {
-            SignInScreen(signViewModel = signViewModel, navController = navController)
+            SignInScreen(
+                signViewModel = signViewModel,
+                onNavigateToMain = {navController.navigate("main"){
+                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                    launchSingleTop = true
+                } }
+            )
         }
 
         composable(SignNavigation.Main.route) {
             MainScreen(signViewModel = signViewModel)
         }
-
     }
-
 }
+

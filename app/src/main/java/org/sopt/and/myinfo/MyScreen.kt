@@ -1,5 +1,6 @@
 package org.sopt.and.myinfo
 
+import androidx.annotation.ColorRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -12,10 +13,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.sopt.and.viewmodel.SignViewModel
+
+enum class BottomNavItem(val icon: ImageVector, val description: String) {
+    Home(Icons.Default.Home, "홈"),
+    SEARCH(Icons.Default.Search, "검색"),
+    PROFILE(Icons.Default.AccountCircle, "내 정보")
+}
 
 @Composable
 fun MyScreen(modifier: Modifier = Modifier, signViewModel: SignViewModel) {
@@ -34,7 +42,7 @@ fun MyScreen(modifier: Modifier = Modifier, signViewModel: SignViewModel) {
         Spacer(modifier = Modifier.height(30.dp))
         InfoZone(title = "관심 프로그램", message = "관심 프로그램이 없어요.")
         Spacer(modifier = Modifier.weight(1f))
-        Footer()
+        BottomNavigation()
     }
 }
 
@@ -129,27 +137,19 @@ fun InfoZone(title: String, message: String) {
 }
 
 @Composable
-fun Footer() {
+fun BottomNavigation() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        Icon(
-            imageVector = Icons.Default.Home,
-            contentDescription = "홈 아이콘",
-            tint = Color.White
-        )
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = "검색 아이콘",
-            tint = Color.White
-        )
-        Icon(
-            imageVector = Icons.Default.AccountCircle,
-            contentDescription = "프로필 아이콘",
-            tint = Color.White
-        )
+        BottomNavItem.entries.forEach { item ->
+            Icon(
+                imageVector = item.icon,
+                contentDescription = item.description,
+                tint = Color.White
+            )
+        }
     }
 }

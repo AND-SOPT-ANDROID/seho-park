@@ -22,11 +22,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import org.sopt.and.viewmodel.SignViewModel
 
 @Composable
-fun SignUpScreen(signViewModel: SignViewModel, navController: NavController) {
+fun SignUpScreen(
+    signViewModel: SignViewModel,
+    onNavigateBack: () -> Unit,
+    onNavigateToSignIn: () -> Unit
+) {
     val context = LocalContext.current
 
     Column(
@@ -34,12 +37,11 @@ fun SignUpScreen(signViewModel: SignViewModel, navController: NavController) {
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        SignUpHeader(navController)
+        SignUpHeader(onNavigateToSignIn)
         Spacer(modifier = Modifier.height(20.dp))
         SignUpText()
         Spacer(modifier = Modifier.height(30.dp))
 
-        // Email field with validation
         SignUpTextField(
             label = "wavve@example.com",
             textValue = signViewModel.email,
@@ -48,36 +50,37 @@ fun SignUpScreen(signViewModel: SignViewModel, navController: NavController) {
         )
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Password field with validation
         SignUpTextField(
             label = "ex) abcdEFG123",
             textValue = signViewModel.password,
             onTextChanged = { signViewModel.password = it },
             isPasswordField = true,
             isPasswordVisible = signViewModel.isPasswordVisible,
-            onPasswordToggle = { signViewModel.isPasswordVisible = !signViewModel.isPasswordVisible },
+            onPasswordToggle = {
+                signViewModel.isPasswordVisible = !signViewModel.isPasswordVisible
+            },
             errorMessage = "⚠️ 비밀번호는 8~20자 이내로 설정해 주세요."
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Sign-up button
         SignUpButton(
             email = signViewModel.email,
             password = signViewModel.password,
             onSignUpSuccess = {
                 Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()
-                navController.navigate("signIn")
+                onNavigateToSignIn()
             },
             onSignUpFailure = {
                 Toast.makeText(context, "회원가입 실패: 입력 정보를 확인해주세요.", Toast.LENGTH_SHORT).show()
-            }
+            },
+            performSignUp = { signViewModel.performSignUp() }
         )
     }
 }
 
 @Composable
-fun SignUpHeader(navController: NavController) {
+fun SignUpHeader(onNavigateToSignIn: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -95,7 +98,7 @@ fun SignUpHeader(navController: NavController) {
             color = Color.White,
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .clickable { navController.popBackStack() }
+                .clickable { onNavigateToSignIn() }
         )
     }
 }
@@ -135,7 +138,11 @@ fun SignUpTextField(
     onPasswordToggle: (() -> Unit)? = null,
     errorMessage: String = ""
 ) {
-    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 15.dp)
+    ) {
         TextField(
             value = textValue,
             onValueChange = onTextChanged,
@@ -148,7 +155,7 @@ fun SignUpTextField(
             visualTransformation = if (isPasswordField && !isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
             trailingIcon = if (isPasswordField) {
                 {
-                    TextButton(onClick = onPasswordToggle!!) {
+                    TextButton(onClick = { onPasswordToggle?.invoke() }) {
                         Text(text = if (isPasswordVisible) "Hide" else "Show", color = Color.White)
                     }
                 }
@@ -170,11 +177,13 @@ fun SignUpButton(
     email: String,
     password: String,
     onSignUpSuccess: () -> Unit,
-    onSignUpFailure: () -> Unit
+    onSignUpFailure: () -> Unit,
+    performSignUp: () -> Unit
 ) {
     TextButton(
         onClick = {
             if (email.isNotEmpty() && password.length in 8..20) {
+                performSignUp()
                 onSignUpSuccess()
             } else {
                 onSignUpFailure()

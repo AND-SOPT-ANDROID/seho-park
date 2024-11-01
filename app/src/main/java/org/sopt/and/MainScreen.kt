@@ -49,12 +49,12 @@ fun BottomBar(navController: NavHostController) {
     val currentDestination = navBackStackEntry?.destination
 
     NavigationBar(
-        containerColor = Color.DarkGray
+        containerColor = Color.Black
     ) {
         screens.forEach { screen ->
-            AddItem(
+            BottomNavItem(
                 item = screen,
-                currentDestination = currentDestination,
+                isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                 navController = navController
             )
         }
@@ -62,33 +62,33 @@ fun BottomBar(navController: NavHostController) {
 }
 
 @Composable
-fun RowScope.AddItem(
+fun RowScope.BottomNavItem(
     item: BottomNavigation,
-    currentDestination: NavDestination?,
+    isSelected: Boolean?,
     navController: NavHostController
 ) {
-    NavigationBarItem(
-        label = { Text(text = stringResource(item.title), fontSize = 10.sp) },
-        icon = {
-            Icon(
-                imageVector = item.icon,
-                contentDescription = stringResource(item.title)
-            )
-        },
-        selected = currentDestination?.hierarchy?.any {
-            it.route == item.route
-        } == true,
-        colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = Color.White,
-            unselectedIconColor = Color.Gray
-        ),
-        onClick = {
-            navController.navigate(item.route) {
-                popUpTo(navController.graph.findStartDestination().id) {
-                    saveState = true
+    if (isSelected != null) {
+        NavigationBarItem(
+            label = { Text(text = stringResource(item.title), fontSize = 10.sp) },
+            icon = {
+                Icon(
+                    imageVector = item.icon,
+                    contentDescription = stringResource(item.title)
+                )
+            },
+            selected = isSelected,
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.White,
+                unselectedIconColor = Color.Gray
+            ),
+            onClick = {
+                navController.navigate(item.route) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
                 }
-                launchSingleTop = true
             }
-        }
-    )
+        )
+    }
 }

@@ -12,15 +12,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
+
 import kotlinx.coroutines.launch
 import org.sopt.and.R
 import org.sopt.and.viewmodel.SignViewModel
 
 
 @Composable
-fun SignInScreen(signViewModel: SignViewModel, navController: NavHostController) {
+fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: ()-> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     var isPasswordVisible by remember { mutableStateOf(false) }
@@ -70,10 +69,7 @@ fun SignInScreen(signViewModel: SignViewModel, navController: NavHostController)
                     coroutineScope.launch {
                         if (signViewModel.validateSignIn()) {
                             snackbarHostState.showSnackbar("로그인 성공!")
-                            navController.navigate("main") {
-                                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                                launchSingleTop = true
-                            }
+                            onNavigateToMain()
                         } else {
                             snackbarHostState.showSnackbar("로그인 실패: 이메일과 비밀번호를 확인해주세요.")
                         }

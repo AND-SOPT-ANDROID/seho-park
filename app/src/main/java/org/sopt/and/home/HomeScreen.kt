@@ -6,9 +6,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +25,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import org.sopt.and.R
 
 val Posters = List(9) { R.drawable.bee }
@@ -32,7 +38,9 @@ val roundedCorner = RoundedCornerShape(3.dp)
 @Composable
 fun HomeScreen() {
     LazyColumn(
-        modifier = Modifier.fillMaxSize().background(Color.Black),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         item {
@@ -44,33 +52,43 @@ fun HomeScreen() {
         }
         item {
             Section(title = R.string.recommendation_label) {
-                PosterRow(moviePosters = Posters, itemComposable = { poster, _ -> RecommendPosterItem(poster) })
+                PosterRow(
+                    moviePosters = Posters,
+                    itemComposable = { poster, _ -> RecommendPosterItem(poster) })
             }
         }
         item {
             Section(title = R.string.ranking_label) {
-                PosterRow(moviePosters = Posters, itemComposable = { poster, rank -> rank?.let {
-                    TopPosterItem(poster,
-                        it
-                    )
-                } })
+                PosterRow(moviePosters = Posters, itemComposable = { poster, rank ->
+                    rank?.let {
+                        TopPosterItem(
+                            poster,
+                            it
+                        )
+                    }
+                })
             }
         }
     }
 }
 
 
-
 @Composable
 fun CategoryRow(categories: List<String>) {
     LazyRow(
-        modifier = Modifier.padding(top = 10.dp).fillMaxWidth(),
+        modifier = Modifier
+            .padding(top = 10.dp)
+            .fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = 15.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        items(categories.size) { index ->
-            Text(text = categories[index], color = categoryColor, fontSize = 18.sp)
+        items(categories) { category ->
+            Text(
+                text = category,
+                color = Color.LightGray,
+                fontSize = 18.sp
+            )
         }
     }
 }
@@ -90,28 +108,33 @@ fun Section(@StringRes title: Int, content: @Composable () -> Unit) {
 
 @Composable
 fun BannerView() {
-    LazyRow(
+    val pagerState = rememberPagerState(pageCount = { 5 })
+
+    LaunchedEffect(pagerState) {
+        while (true) {
+            delay(2500)
+            val nextPage = (pagerState.currentPage + 1) % 5
+            pagerState.animateScrollToPage(nextPage)
+        }
+    }
+
+    HorizontalPager(
+        state = pagerState,
         modifier = Modifier
             .fillMaxWidth()
             .height(400.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
-    ) {
-        items(5) { index ->
-            Box(
-                modifier = Modifier
-                    .width(300.dp)
-                    .height(400.dp)
-                    .background(Color.DarkGray)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.bee),
-                    contentDescription = "Banner Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        }
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        pageSpacing = 8.dp
+    ) { _ ->
+        Image(
+            painter = painterResource(id = R.drawable.bee),
+            contentDescription = "Banner Image",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(0.75f)
+                .background(Color.DarkGray)
+        )
     }
 }
 
@@ -121,12 +144,11 @@ fun PosterRow(moviePosters: List<Int>, itemComposable: @Composable (Int, Int?) -
         contentPadding = PaddingValues(15.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        items(moviePosters.size) { index ->
-            itemComposable(moviePosters[index], index + 1)
+        itemsIndexed(moviePosters) { index, poster ->
+            itemComposable(poster, index + 1)
         }
     }
 }
-
 
 
 @Composable
@@ -147,12 +169,16 @@ fun TopPosterItem(posterItem: Int, rank: Int) {
         Image(
             painter = painterResource(id = posterItem),
             contentDescription = "영화 포스터",
-            modifier = Modifier.size(150.dp, 225.dp).clip(roundedCorner),
+            modifier = Modifier
+                .size(150.dp, 225.dp)
+                .clip(roundedCorner),
             contentScale = ContentScale.Crop
         )
         Text(
             text = "$rank",
-            modifier = Modifier.align(Alignment.BottomStart).padding(start = 10.dp),
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 10.dp),
             color = textColor,
             fontSize = 40.sp,
             fontWeight = FontWeight.W800,
