@@ -7,4 +7,9 @@
     <string name="find_id_label">아이디 찾기</string>
     <string name="reset_pw_label">비밀번호 재설정</string>
     <string name="sign_up_label">회원가입</string>
+    <string name="home_label">홈</string>
+    <string name="search_label">검색</string>
+    <string name="my_label">MY</string>
+    <string name="recommendation_label">믿고 보는 웨이브 에디터 추천작</string>
+    <string name="ranking_label">오늘의 TOP 20</string>
 </resources>
