@@ -39,7 +39,7 @@ fun MyApp(signViewModel: SignViewModel) {
         composable(SignNavigation.SignUp.route) {
             SignUpScreen(
                 signViewModel = signViewModel,
-                onNavigateBack = { navController.popBackStack() },
+//                onNavigateBack = { navController.popBackStack() },
                 onNavigateToSignIn = { navController.navigate("signIn") },
             )
         }

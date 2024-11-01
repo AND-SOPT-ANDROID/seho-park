@@ -1,5 +1,6 @@
 package org.sopt.and.signin
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -8,20 +9,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import kotlinx.coroutines.launch
 import org.sopt.and.R
+import org.sopt.and.component.AuthSignButton
 import org.sopt.and.viewmodel.SignViewModel
 
+import org.sopt.and.component.CustomTextField
 
 @Composable
-fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: ()-> Unit) {
+fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: () -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
     var isPasswordVisible by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -39,53 +39,37 @@ fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: ()-> Unit) {
             Spacer(modifier = Modifier.height(10.dp))
 
             // 이메일 입력 필드
-            TextField(
-                value = signViewModel.email,
-                onValueChange = { signViewModel.email = it },
-                label = { Text(text = stringResource(id = R.string.email_label)) },
-                singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Gray,
-                    unfocusedContainerColor = Color.Gray
-                ),
+            CustomTextField(
+                labelResId = R.string.email_label,
+                textValue = signViewModel.email,
+                onTextChanged = { signViewModel.email = it },
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(10.dp))
 
             // 비밀번호 입력 필드 및 show/hide 버튼
-            PasswordField(
-                password = signViewModel.password,
+            CustomTextField(
+                labelResId = R.string.password_label,
+                textValue = signViewModel.password,
+                onTextChanged = { signViewModel.password = it },
+                isPasswordField = true,
                 isPasswordVisible = isPasswordVisible,
-                onPasswordChange = { signViewModel.password = it },
-                onVisibilityToggle = { isPasswordVisible = !isPasswordVisible }
+                onPasswordToggle = { isPasswordVisible = !isPasswordVisible },
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 로그인 버튼
-            Button(
-                onClick = {
-                    coroutineScope.launch {
-                        if (signViewModel.validateSignIn()) {
-                            snackbarHostState.showSnackbar("로그인 성공!")
-                            onNavigateToMain()
-                        } else {
-                            snackbarHostState.showSnackbar("로그인 실패: 이메일과 비밀번호를 확인해주세요.")
-                        }
-                    }
+            AuthSignButton(
+                buttonText = "로그인",
+                validateAction = { signViewModel.validateSignIn() },
+                snackbarHostState = snackbarHostState,
+                onSuccess = {
+                    onNavigateToMain()
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 40.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.login_label),
-                    fontSize = 16.sp,
-                    color = Color.White
-                )
-            }
+                onFailure = {}
+            )
         }
     }
 }
@@ -110,33 +94,4 @@ fun LoginHeader() {
             modifier = Modifier.align(Alignment.Center)
         )
     }
-}
-
-@Composable
-fun PasswordField(
-    password: String,
-    isPasswordVisible: Boolean,
-    onPasswordChange: (String) -> Unit,
-    onVisibilityToggle: () -> Unit
-) {
-    TextField(
-        value = password,
-        onValueChange = onPasswordChange,
-        label = { Text(text = stringResource(id = R.string.password_label)) },
-        singleLine = true,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Gray,
-            unfocusedContainerColor = Color.Gray
-        ),
-        visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-        trailingIcon = {
-            TextButton(onClick = onVisibilityToggle) {
-                Text(
-                    text = if (isPasswordVisible) "Hide" else "Show",
-                    color = Color.White
-                )
-            }
-        },
-        modifier = Modifier.fillMaxWidth()
-    )
 }
