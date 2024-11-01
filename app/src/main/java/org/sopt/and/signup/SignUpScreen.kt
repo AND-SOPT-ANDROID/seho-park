@@ -13,17 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.sopt.and.R
 import org.sopt.and.component.AuthSignButton
 import org.sopt.and.viewmodel.SignViewModel
 import org.sopt.and.component.CustomTextField
+import org.sopt.and.component.SignTopBar
 
 
 @Composable
@@ -46,7 +43,7 @@ fun SignUpScreen(
         ) {
             SignUpHeader(onNavigateToSignIn)
             Spacer(modifier = Modifier.height(20.dp))
-            SignUpText()
+            SignTopBar(isSignUp = true)
             Spacer(modifier = Modifier.height(30.dp))
 
             CustomTextField(
@@ -114,28 +111,4 @@ fun SignUpHeader(onNavigateToSignIn: () -> Unit) {
     }
 }
 
-@Composable
-fun SignUpText() {
-    val annotatedText = buildAnnotatedString {
-        withStyle(style = SpanStyle(fontWeight = FontWeight.Medium)) {
-            append("이메일과 비밀번호")
-        }
-        withStyle(style = SpanStyle(fontWeight = FontWeight.Light)) {
-            append("만으로\n")
-        }
-        withStyle(style = SpanStyle(fontWeight = FontWeight.Medium)) {
-            append("Wavve를 즐길 수 ")
-        }
-        withStyle(style = SpanStyle(fontWeight = FontWeight.Light)) {
-            append("있어요!")
-        }
-    }
-
-    Text(
-        text = annotatedText,
-        color = Color.White,
-        fontSize = 28.sp,
-        modifier = Modifier.padding(start = 15.dp, end = 15.dp)
-    )
-}
 
