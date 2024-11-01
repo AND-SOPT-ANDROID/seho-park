@@ -76,7 +76,6 @@ fun SignUpScreen(
             AuthSignButton(
                 buttonText = "Wavve 회원가입",
                 validateAction = { signViewModel.validateSignInOrUp() },
-                snackbarHostState = snackbarHostState,
                 onSuccess = {
                     signViewModel.performSignUp()
                     Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()

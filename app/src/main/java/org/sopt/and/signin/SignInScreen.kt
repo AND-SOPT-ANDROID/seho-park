@@ -59,7 +59,6 @@ fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: () -> Unit) {
             AuthSignButton(
                 buttonText = "로그인",
                 validateAction = { signViewModel.validateSignIn() },
-                snackbarHostState = snackbarHostState,
                 onSuccess = {
                     onNavigateToMain()
                 },

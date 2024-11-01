@@ -17,7 +17,6 @@ fun AuthSignButton(
     validateAction: () -> Boolean,
     onSuccess: () -> Unit,
     onFailure: () -> Unit,
-    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     buttonColor: Color = Color.Blue
 ) {
@@ -27,10 +26,8 @@ fun AuthSignButton(
         onClick = {
             coroutineScope.launch {
                 if (validateAction()) {
-                    snackbarHostState.showSnackbar("$buttonText 성공!")
                     onSuccess()
                 } else {
-                    snackbarHostState.showSnackbar("$buttonText 실패: 이메일과 비밀번호를 확인해주세요.")
                     onFailure()
                 }
             }
