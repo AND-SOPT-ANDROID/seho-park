@@ -9,11 +9,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 import org.sopt.and.R
-import org.sopt.and.component.AuthSignButton
+import org.sopt.and.components.AuthSignButton
 import org.sopt.and.viewmodel.SignViewModel
 
-import org.sopt.and.component.CustomTextField
-import org.sopt.and.component.SignTopBar
+import org.sopt.and.components.CustomTextField
+import org.sopt.and.components.SignTopBar
 
 @Composable
 fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: () -> Unit) {

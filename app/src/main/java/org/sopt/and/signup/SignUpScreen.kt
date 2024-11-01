@@ -17,10 +17,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.sopt.and.R
-import org.sopt.and.component.AuthSignButton
+import org.sopt.and.components.AuthSignButton
 import org.sopt.and.viewmodel.SignViewModel
-import org.sopt.and.component.CustomTextField
-import org.sopt.and.component.SignTopBar
+import org.sopt.and.components.CustomTextField
+import org.sopt.and.components.SignTopBar
 
 
 @Composable
@@ -50,6 +50,8 @@ fun SignUpScreen(
                 labelResId = R.string.email_label,
                 textValue = signViewModel.email,
                 onTextChanged = { signViewModel.email = it },
+                showHint = true,
+                hintResId = R.string.sign_up_id,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -64,6 +66,8 @@ fun SignUpScreen(
                 onPasswordToggle = {
                     signViewModel.isPasswordVisible = !signViewModel.isPasswordVisible
                 },
+                showHint = true,
+                hintResId = R.string.sign_up_passwd,
                 modifier = Modifier.fillMaxWidth()
             )
 

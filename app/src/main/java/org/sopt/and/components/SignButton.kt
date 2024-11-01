@@ -1,4 +1,4 @@
-package org.sopt.and.component
+package org.sopt.and.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
