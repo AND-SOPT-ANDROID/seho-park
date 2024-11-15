@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 import org.sopt.and.R
 import org.sopt.and.components.AuthSignButton
@@ -17,8 +18,14 @@ import org.sopt.and.components.CustomTextField
 import org.sopt.and.components.SignTopBar
 
 @Composable
-fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: () -> Unit, onNavigateToSignUp: ()-> Unit)  {
+fun SignInScreen(
+    signViewModel: SignViewModel,
+    onNavigateToMain: () -> Unit,
+    onNavigateToSignUp: () -> Unit
+) {
     val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
     var isPasswordVisible by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -57,14 +64,42 @@ fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: () -> Unit, onN
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            // 로그인 버튼
             AuthSignButton(
                 buttonText = "로그인",
-                validateAction = { signViewModel.validateSignIn() },
-                onSuccess = {
-                    onNavigateToMain()
+                validateAction = {
+                    // 입력 검증
+                    signViewModel.email.text.isNotEmpty() && signViewModel.password.text.isNotEmpty()
                 },
-                onFailure = {}
+                onSuccess = {
+                    coroutineScope.launch {
+                        signViewModel.performLogin(
+                            onSuccess = {
+                                // 로그인 성공 시 snackbar 호출
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("로그인 성공!")
+                                    onNavigateToMain()
+                                }
+                            },
+                            onFailure = { errorMessage ->
+                                // 로그인 실패 시 snackbar 호출
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar(errorMessage)
+                                }
+                            }
+                        )
+                    }
+                },
+                onFailure = {
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("입력 값을 확인해주세요.")
+                    }
+                }
             )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 하단 링크
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -78,19 +113,16 @@ fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: () -> Unit, onN
                     text = " | ",
                     modifier = Modifier.padding(horizontal = 8.dp),
                     color = Color.White
-
                 )
 
                 Text(
                     text = "비밀번호 재설정",
                     color = Color.White
-
                 )
 
                 Text(
                     text = " | ",
                     color = Color.White
-
                 )
 
                 Text(
@@ -99,8 +131,6 @@ fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: () -> Unit, onN
                     color = Color.White
                 )
             }
-
         }
     }
 }
-

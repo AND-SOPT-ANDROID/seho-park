@@ -14,7 +14,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.sopt.and.R
 import org.sopt.and.components.AuthSignButton
 import org.sopt.and.viewmodel.SignViewModel
@@ -28,6 +30,16 @@ fun SignUpScreen(
 ) {
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
+
+    var snackbarMessage by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(snackbarMessage) {
+        snackbarMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            snackbarMessage = null // 메시지 초기화
+        }
+    }
+
     val coroutineScope = rememberCoroutineScope()
 
     // 상태값 관리
@@ -60,7 +72,7 @@ fun SignUpScreen(
                 textValue = username,
                 onTextChanged = {
                     username = it
-                    usernameError = username.text.length < 8
+                    usernameError = username.text.length > 8
                 },
                 showHint = true,
                 hintResId = R.string.sign_up_username_hint,
@@ -68,7 +80,7 @@ fun SignUpScreen(
             )
             if (usernameError) {
                 Text(
-                    text = "Username must be at least 8 characters.",
+                    text = "8자보다 크면 안됩니다.",
                     color = Color.Red,
                     modifier = Modifier.padding(top = 4.dp)
                 )
@@ -82,7 +94,7 @@ fun SignUpScreen(
                 textValue = password,
                 onTextChanged = {
                     password = it
-                    passwordError = password.text.length < 8
+                    passwordError = password.text.length > 8
                 },
                 isPasswordField = true,
                 isPasswordVisible = signViewModel.isPasswordVisible,
@@ -95,7 +107,7 @@ fun SignUpScreen(
             )
             if (passwordError) {
                 Text(
-                    text = "Password must be at least 8 characters.",
+                    text = "8자보다 크면 안됩니다.",
                     color = Color.Red,
                     modifier = Modifier.padding(top = 4.dp)
                 )
@@ -109,7 +121,7 @@ fun SignUpScreen(
                 textValue = hobby,
                 onTextChanged = {
                     hobby = it
-                    hobbyError = hobby.text.length < 8
+                    hobbyError = hobby.text.length > 8
                 },
                 showHint = true,
                 hintResId = R.string.sign_up_hobby_hint,
@@ -117,7 +129,7 @@ fun SignUpScreen(
             )
             if (hobbyError) {
                 Text(
-                    text = "Hobby must be at least 8 characters.",
+                    text = "8자보다 크면 안됩니다.",
                     color = Color.Red,
                     modifier = Modifier.padding(top = 4.dp)
                 )
@@ -130,9 +142,7 @@ fun SignUpScreen(
                 buttonText = "회원가입",
                 validateAction = {
                     // 전체 유효성 검사
-                    usernameError = username.text.length < 8
-                    passwordError = password.text.length < 8
-                    hobbyError = hobby.text.length < 8
+
 
                     // 모든 조건을 만족해야 회원가입 요청 실행
                     !usernameError && !passwordError && !hobbyError
@@ -143,19 +153,27 @@ fun SignUpScreen(
                         password.text,
                         hobby.text,
                         onSuccess = {
-                            Toast.makeText(context, "회원가입 성공", Toast.LENGTH_SHORT).show()
+                            coroutineScope.launch {
+                                withContext(Dispatchers.Main) {
+                                    snackbarHostState.showSnackbar("회원가입 성공") // 메인 스레드에서 호출
+                                }
+                            }
                             onNavigateToSignIn()
                         },
                         onFailure = { errorMessage ->
                             coroutineScope.launch {
-                                snackbarHostState.showSnackbar(errorMessage)
+                                withContext(Dispatchers.Main) {
+                                    snackbarHostState.showSnackbar(errorMessage) // 메인 스레드에서 호출
+                                }
                             }
                         }
                     )
                 },
                 onFailure = {
                     coroutineScope.launch {
-                        snackbarHostState.showSnackbar("입력 값을 확인해주세요.")
+                        withContext(Dispatchers.Main) {
+                            snackbarHostState.showSnackbar("입력 값을 확인해주세요.") // 메인 스레드에서 호출
+                        }
                     }
                 }
             )

@@ -2,6 +2,7 @@ package org.sopt.and.viewmodel
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,7 +12,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.sopt.and.api.LoginService
 import org.sopt.and.api.UserRegistrationService
+import org.sopt.and.dto.RequestLoginData
 import org.sopt.and.dto.RequestUserRegistrationData
 import org.sopt.and.dto.ResponseUserRegistration
 import javax.inject.Inject
@@ -19,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignViewModel @Inject constructor(
     application: Application,
-    private val userRegistrationService: UserRegistrationService // Hilt를 통한 주입
+    private val userRegistrationService: UserRegistrationService, // Hilt를 통한 주입
+    private val loginService: LoginService // Hilt를 통한 주입
 ) : AndroidViewModel(application) {
 
     private val preferences: SharedPreferences by lazy {
@@ -56,33 +60,49 @@ class SignViewModel @Inject constructor(
         }
     }
 
-    /** Validate email and password during sign-in */
-
-    fun String.performSignUp(
-        password: String,
-        hobby: String,
-        onSuccess: (ResponseUserRegistration) -> Unit,
+    /** 로그인 API 요청 */
+    fun performLogin(
+        onSuccess: () -> Unit,
         onFailure: (String) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val request = RequestUserRegistrationData(this@performSignUp, password, hobby)
-                val response = userRegistrationService.postUserRegistration(request)
+                val request = RequestLoginData(
+                    userName = email.text,
+                    password = password.text
+                )
+                Log.d("SignViewModel", "로그인 요청 데이터: $request") // 요청 데이터 로그
+
+                val response = loginService.postLogin(request) // Hilt로 주입된 서비스 사용
                 if (response.isSuccessful) {
-                    response.body()?.let { onSuccess(it) } ?: onFailure("서버 응답이 비어있습니다.")
+                    response.body()?.let {
+                        val token = it.result.token
+                        Log.d("SignViewModel", "로그인 성공, 토큰: $token") // 성공 응답 로그
+                        preferences.edit().putString("auth_token", token).apply()
+                        onSuccess()
+                    } ?: onFailure("서버 응답이 비어있습니다.")
                 } else {
-                    onFailure("회원가입 실패: ${response.code()} - ${response.message()}")
+                    Log.e(
+                        "SignViewModel",
+                        "로그인 실패: ${response.code()} - ${response.message()} - ${response.errorBody()?.string()}"
+                    ) // 실패 로그
+                    onFailure("로그인 실패: ${response.code()} - ${response.message()}")
                 }
             } catch (e: Exception) {
+                Log.e("SignViewModel", "로그인 요청 중 에러 발생: ${e.localizedMessage}", e) // 예외 로그
                 onFailure("에러 발생: ${e.localizedMessage}")
             }
         }
     }
 
+    /** Validate inputs for sign-up */
+    fun validateSignUpInputs(username: String, password: String, hobby: String): Boolean {
+        return username.length <= 8 && password.length <= 8 && hobby.length <= 8
+    }
 
-    /** Validates both email and password */
-    fun validateSignInOrUp(username: String, password: String, hobby: String): Boolean {
-        return username.length >= 8 && password.length >= 8 && hobby.length >= 8
+    /** Validate email and password during sign-in */
+    fun validateSignInInputs(): Boolean {
+        return email.text.isNotEmpty() && password.text.isNotEmpty()
     }
 
     /** Checks if the email meets the required format */
