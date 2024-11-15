@@ -10,19 +10,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.sp
 
 @Composable
 fun CustomTextField(
     labelResId: Int,
-    textValue: String,
-    onTextChanged: (String) -> Unit,
+    textValue: TextFieldValue,
+    onTextChanged: (TextFieldValue) -> Unit,
     isPasswordField: Boolean = false,
     isPasswordVisible: Boolean = false,
     onPasswordToggle: (() -> Unit)? = null,
-    showHint: Boolean = false,  // 추가된 파라미터
-    hintResId: Int? = null,  // 추가된 파라미터
+    showHint: Boolean = false,
+    hintResId: Int? = null,
     modifier: Modifier = Modifier
 ) {
     Column {
