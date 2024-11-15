@@ -39,7 +39,7 @@ fun MyApp(signViewModel: SignViewModel) {
         composable(SignNavigation.SignUp.route) {
             SignUpScreen(
                 signViewModel = signViewModel,
-                onNavigateBack = { navController.popBackStack() },
+//                onNavigateBack = { navController.popBackStack() },
                 onNavigateToSignIn = { navController.navigate("signIn") },
             )
         }
@@ -49,7 +49,9 @@ fun MyApp(signViewModel: SignViewModel) {
                 onNavigateToMain = {navController.navigate("main"){
                     popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                     launchSingleTop = true
-                } }
+                }},
+                onNavigateToSignUp = {navController.navigate("signUp")}
+
             )
         }
 
