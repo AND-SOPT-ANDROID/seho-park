@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.sopt.and.api.HobbyService
 import org.sopt.and.api.LoginService
 import org.sopt.and.api.UserRegistrationService
 import org.sopt.and.dto.RequestLoginData
@@ -22,8 +23,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SignViewModel @Inject constructor(
     application: Application,
-    private val userRegistrationService: UserRegistrationService, // Hilt를 통한 주입
-    private val loginService: LoginService // Hilt를 통한 주입
+    private val userRegistrationService: UserRegistrationService, // Hilt로 주입
+    private val loginService: LoginService, // Hilt로 주입
+    private val hobbyService: HobbyService // Hilt로 주입
 ) : AndroidViewModel(application) {
 
     private val preferences: SharedPreferences by lazy {
@@ -32,6 +34,7 @@ class SignViewModel @Inject constructor(
 
     var email by mutableStateOf(TextFieldValue("")) // TextFieldValue 사용
     var password by mutableStateOf(TextFieldValue("")) // TextFieldValue 사용
+    var hobby by mutableStateOf("") // hobby 추가
     var isPasswordVisible by mutableStateOf(false)
 
     private var emailError by mutableStateOf("")
@@ -95,6 +98,40 @@ class SignViewModel @Inject constructor(
         }
     }
 
+    /** 취미 조회 API 요청 */
+    fun fetchHobby(
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        val token = preferences.getString("auth_token", null)
+        if (token.isNullOrEmpty()) {
+            onFailure("유효한 토큰이 없습니다.")
+            return
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = hobbyService.getHobby(token)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        hobby = it.result.hobby // 상태값 업데이트
+                        Log.d("SignViewModel", "취미 조회 성공: $hobby")
+                        onSuccess()
+                    } ?: onFailure("서버 응답이 비어있습니다.")
+                } else {
+                    Log.e(
+                        "SignViewModel",
+                        "취미 조회 실패: ${response.code()} - ${response.message()} - ${response.errorBody()?.string()}"
+                    )
+                    onFailure("취미 조회 실패: ${response.code()} - ${response.message()}")
+                }
+            } catch (e: Exception) {
+                Log.e("SignViewModel", "취미 조회 요청 중 에러 발생: ${e.localizedMessage}", e)
+                onFailure("에러 발생: ${e.localizedMessage}")
+            }
+        }
+    }
+
     /** Validate inputs for sign-up */
     fun validateSignUpInputs(username: String, password: String, hobby: String): Boolean {
         return username.length <= 8 && password.length <= 8 && hobby.length <= 8
@@ -103,29 +140,6 @@ class SignViewModel @Inject constructor(
     /** Validate email and password during sign-in */
     fun validateSignInInputs(): Boolean {
         return email.text.isNotEmpty() && password.text.isNotEmpty()
-    }
-
-    /** Checks if the email meets the required format */
-    private fun isEmailValid(): Boolean {
-        emailError = when {
-            email.text.isEmpty() -> "이메일을 입력하세요."
-            !Constants.EMAIL_REGEX.matches(email.text) -> "이메일 형식이 올바르지 않습니다."
-            else -> ""
-        }
-        return emailError.isEmpty()
-    }
-
-    /** Checks if the password meets length and complexity requirements */
-    private fun isPasswordValid(): Boolean {
-        passwordError = when {
-            password.text.isEmpty() -> "비밀번호를 입력하세요."
-            password.text.length !in Constants.MIN_PASSWORD_LENGTH..Constants.MAX_PASSWORD_LENGTH ->
-                "비밀번호는 ${Constants.MIN_PASSWORD_LENGTH}-${Constants.MAX_PASSWORD_LENGTH}자여야 합니다."
-            !isPasswordComplexEnough(password.text) ->
-                "비밀번호는 영문 대소문자, 숫자, 특수문자 중 3가지 이상을 포함해야 합니다."
-            else -> ""
-        }
-        return passwordError.isEmpty()
     }
 
     companion object Constants {

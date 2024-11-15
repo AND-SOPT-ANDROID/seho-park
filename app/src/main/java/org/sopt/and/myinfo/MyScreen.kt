@@ -1,5 +1,7 @@
 package org.sopt.and.myinfo
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,6 +12,12 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,6 +25,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import org.sopt.and.viewmodel.SignViewModel
 
 enum class BottomNavItem(val icon: ImageVector, val description: String) {
@@ -25,14 +34,30 @@ enum class BottomNavItem(val icon: ImageVector, val description: String) {
     PROFILE(Icons.Default.AccountCircle, "내 정보")
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun MyScreen(modifier: Modifier = Modifier, signViewModel: SignViewModel) {
+    var hobby by mutableStateOf("") // 초기 값 확인
+    val coroutineScope = rememberCoroutineScope()
+
+    // 취미 데이터를 로드
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            signViewModel.fetchHobby(
+                onSuccess = { /* 성공 시 처리할 로직 필요 없음 - 이미 상태가 업데이트됨 */ },
+                onFailure = { errorMessage ->
+                    Log.e("MyScreen", "취미 로드 실패: $errorMessage")
+                }
+            )
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        MyHeader(email = signViewModel.email.toString())
+        MyHeader(hobby = hobby) // 최신 hobby 값을 전달
         Spacer(modifier = Modifier.height(20.dp))
         PurchseZone(title = "첫 결제 시 첫 달 100원!")
         Spacer(modifier = Modifier.height(15.dp))
@@ -47,7 +72,7 @@ fun MyScreen(modifier: Modifier = Modifier, signViewModel: SignViewModel) {
 }
 
 @Composable
-fun MyHeader(email: String) {
+fun MyHeader(hobby: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -63,7 +88,7 @@ fun MyHeader(email: String) {
             tint = Color.White
         )
         Text(
-            text = email,
+            text = hobby.ifEmpty { "sport" }, // 초기 값 및 업데이트된 값 반영
             fontSize = 15.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold,
