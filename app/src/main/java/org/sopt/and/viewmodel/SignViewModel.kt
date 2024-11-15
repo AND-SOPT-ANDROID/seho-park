@@ -2,17 +2,25 @@ package org.sopt.and.viewmodel
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.sopt.and.api.UserRegistrationService
+import org.sopt.and.dto.RequestUserRegistrationData
+import org.sopt.and.dto.ResponseUserRegistration
+import javax.inject.Inject
 
-class SignViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class SignViewModel @Inject constructor(
+    application: Application,
+    private val userRegistrationService: UserRegistrationService // Hilt를 통한 주입
+) : AndroidViewModel(application) {
 
     private val preferences: SharedPreferences by lazy {
         application.getSharedPreferences("user_prefs", Application.MODE_PRIVATE)
@@ -25,31 +33,52 @@ class SignViewModel(application: Application) : AndroidViewModel(application) {
     private var emailError by mutableStateOf("")
     private var passwordError by mutableStateOf("")
 
-    /** Sign-up: Save email and password to SharedPreferences */
-    fun performSignUp(username: String, password: String, hobby: String) {
-        if (validateSignInOrUp(username, password, hobby)) {
-            viewModelScope.launch(Dispatchers.IO) {
-                preferences.edit().apply {
-                    putString("saved_username", username)
-                    putString("saved_password", password)
-                    putString("saved_hobby", hobby)
-                    apply()
+    /** 회원가입 API 요청 */
+    fun performSignUp(
+        username: String,
+        password: String,
+        hobby: String,
+        onSuccess: (ResponseUserRegistration) -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val request = RequestUserRegistrationData(username, password, hobby)
+                val response = userRegistrationService.postUserRegistration(request) // 주입된 서비스 사용
+                if (response.isSuccessful) {
+                    response.body()?.let { onSuccess(it) } ?: onFailure("서버 응답이 비어있습니다.")
+                } else {
+                    onFailure("회원가입 실패: ${response.code()} - ${response.message()}")
                 }
-                Log.d("SignViewModel", "User info saved: Username: ${username}, Password: ${password}, Hobby: ${hobby}")
+            } catch (e: Exception) {
+                onFailure("에러 발생: ${e.localizedMessage}")
             }
-        } else {
-            Log.d("SignViewModel", "Validation failed. Username: ${username}, Password: ${password}, Hobby: ${hobby}")
         }
     }
 
-
     /** Validate email and password during sign-in */
-    fun validateSignIn(): Boolean {
-        val savedEmail = preferences.getString("saved_email", "")
-        val savedPassword = preferences.getString("saved_password", "")
-        Log.d("SignViewModel", "Loaded Saved Email: $savedEmail, Saved Password: $savedPassword")
-        return email.text == savedEmail && password.text == savedPassword // 수정: TextFieldValue에서 text 접근
+
+    fun String.performSignUp(
+        password: String,
+        hobby: String,
+        onSuccess: (ResponseUserRegistration) -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val request = RequestUserRegistrationData(this@performSignUp, password, hobby)
+                val response = userRegistrationService.postUserRegistration(request)
+                if (response.isSuccessful) {
+                    response.body()?.let { onSuccess(it) } ?: onFailure("서버 응답이 비어있습니다.")
+                } else {
+                    onFailure("회원가입 실패: ${response.code()} - ${response.message()}")
+                }
+            } catch (e: Exception) {
+                onFailure("에러 발생: ${e.localizedMessage}")
+            }
+        }
     }
+
 
     /** Validates both email and password */
     fun validateSignInOrUp(username: String, password: String, hobby: String): Boolean {

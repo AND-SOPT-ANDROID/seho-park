@@ -49,7 +49,7 @@ fun SignUpScreen(
                 .padding(paddingValues)
                 .padding(15.dp)
         ) {
-            SignUpHeader(onNavigateToSignIn)
+            SignUpTobBar (onNavigateToSignIn)
             Spacer(modifier = Modifier.height(20.dp))
             SignTopBar(isSignUp = true)
             Spacer(modifier = Modifier.height(30.dp))
@@ -141,14 +141,21 @@ fun SignUpScreen(
                     signViewModel.performSignUp(
                         username.text,
                         password.text,
-                        hobby.text
+                        hobby.text,
+                        onSuccess = {
+                            Toast.makeText(context, "회원가입 성공", Toast.LENGTH_SHORT).show()
+                            onNavigateToSignIn()
+                        },
+                        onFailure = { errorMessage ->
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(errorMessage)
+                            }
+                        }
                     )
-                    Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()
-                    onNavigateToSignIn()
                 },
                 onFailure = {
                     coroutineScope.launch {
-                        snackbarHostState.showSnackbar("회원가입 실패: 입력 정보를 확인해주세요.")
+                        snackbarHostState.showSnackbar("입력 값을 확인해주세요.")
                     }
                 }
             )
@@ -157,7 +164,7 @@ fun SignUpScreen(
 }
 
 @Composable
-fun SignUpHeader(onNavigateToSignIn: () -> Unit) {
+fun SignUpTobBar(onNavigateToSignIn: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -179,3 +186,5 @@ fun SignUpHeader(onNavigateToSignIn: () -> Unit) {
         )
     }
 }
+
+
