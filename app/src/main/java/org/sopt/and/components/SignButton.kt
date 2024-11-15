@@ -16,7 +16,7 @@ fun AuthSignButton(
     buttonText: String,
     validateAction: () -> Boolean,
     onSuccess: () -> Unit,
-    onFailure: () -> Unit,
+    onFailure: () -> Unit, // @Composable 제거
     modifier: Modifier = Modifier,
     buttonColor: Color = Color.Blue
 ) {
@@ -28,7 +28,7 @@ fun AuthSignButton(
                 if (validateAction()) {
                     onSuccess()
                 } else {
-                    onFailure()
+                    onFailure() // 일반 함수 호출
                 }
             }
         },

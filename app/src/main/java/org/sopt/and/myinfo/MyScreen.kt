@@ -32,7 +32,7 @@ fun MyScreen(modifier: Modifier = Modifier, signViewModel: SignViewModel) {
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        MyHeader(email = signViewModel.email)
+        MyHeader(email = signViewModel.email.toString())
         Spacer(modifier = Modifier.height(20.dp))
         PurchseZone(title = "첫 결제 시 첫 달 100원!")
         Spacer(modifier = Modifier.height(15.dp))
