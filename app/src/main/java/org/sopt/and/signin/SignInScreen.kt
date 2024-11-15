@@ -1,6 +1,7 @@
 package org.sopt.and.signin
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,7 +17,7 @@ import org.sopt.and.components.CustomTextField
 import org.sopt.and.components.SignTopBar
 
 @Composable
-fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: () -> Unit) {
+fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: () -> Unit, onNavigateToSignUp: ()-> Unit)  {
     val snackbarHostState = remember { SnackbarHostState() }
     var isPasswordVisible by remember { mutableStateOf(false) }
 
@@ -64,6 +65,41 @@ fun SignInScreen(signViewModel: SignViewModel, onNavigateToMain: () -> Unit) {
                 },
                 onFailure = {}
             )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "아이디 찾기",
+                    color = Color.White
+                )
+
+                Text(
+                    text = " | ",
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    color = Color.White
+
+                )
+
+                Text(
+                    text = "비밀번호 재설정",
+                    color = Color.White
+
+                )
+
+                Text(
+                    text = " | ",
+                    color = Color.White
+
+                )
+
+                Text(
+                    text = "회원가입",
+                    modifier = Modifier.clickable(onClick = onNavigateToSignUp),
+                    color = Color.White
+                )
+            }
+
         }
     }
 }

@@ -49,7 +49,9 @@ fun MyApp(signViewModel: SignViewModel) {
                 onNavigateToMain = {navController.navigate("main"){
                     popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                     launchSingleTop = true
-                } }
+                }},
+                onNavigateToSignUp = {navController.navigate("signUp")}
+
             )
         }
 
