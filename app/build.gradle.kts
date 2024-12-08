@@ -5,10 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
 }
-
 
 val properties = Properties().apply {
     load(project.rootProject.file("local.properties").inputStream())
@@ -16,7 +13,7 @@ val properties = Properties().apply {
 
 android {
     namespace = "org.sopt.and"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "org.sopt.and"
@@ -52,7 +49,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -61,8 +57,19 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.compose.navigation)
     implementation(libs.androidx.runtime.livedata)
+
+    // network
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.kotlin.serialization.converter)
+
+    implementation(libs.androidx.datastore.preferences)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -70,22 +77,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.material)
-    // Network
-    implementation(platform(libs.okhttp.bom))
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.kotlin.serialization.converter)
-    implementation(libs.kotlinx.serialization.json)
-    //hilt
-    implementation(libs.hilt.android.v2511)
-    kapt(libs.hilt.compiler.v2511)
-    implementation(libs.androidx.hilt.navigation.compose)
-}
-
-kapt {
-    correctErrorTypes = true
 }
