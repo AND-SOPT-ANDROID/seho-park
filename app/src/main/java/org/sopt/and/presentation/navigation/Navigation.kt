@@ -13,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import org.sopt.and.presentation.home.HomeScreen
 import org.sopt.and.presentation.myinfo.MyInfoViewModel
-import org.sopt.and.presentation.myinfo.MyScreen
+import org.sopt.and.presentation.myinfo.MyInfoScreen
 import org.sopt.and.presentation.search.SearchScreen
 import org.sopt.and.presentation.signin.SignInScreen
 import org.sopt.and.presentation.signup.SignUpScreen
@@ -77,7 +77,7 @@ fun Navigation(
             }
 
             composable<Routes.MyInfo> {
-                MyScreen(
+                MyInfoScreen(
                     paddingValues = innerPadding,
                     myHobby = myInfoUiState.myHobby,
                     getMyHobby = myInfoViewModel::getMyHobby,

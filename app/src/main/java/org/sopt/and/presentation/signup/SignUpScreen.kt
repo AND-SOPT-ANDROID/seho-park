@@ -1,207 +1,114 @@
 package org.sopt.and.presentation.signup
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.sopt.and.R
-import org.sopt.and.presentation.components.AuthSignButton
-import org.sopt.and.presentation.viewmodel.SignViewModel
-import org.sopt.and.presentation.components.CustomTextField
-import org.sopt.and.presentation.components.SignTopBar
+import org.sopt.and.presentation.components.SnSBox
+import org.sopt.and.presentation.signup.components.SignUpButton
+import org.sopt.and.presentation.signup.components.SignUpGreetingText
+import org.sopt.and.presentation.signup.components.SignUpHobbyField
+import org.sopt.and.presentation.signup.components.SignUpPasswordField
+import org.sopt.and.presentation.signup.components.SignUpTopBar
+import org.sopt.and.presentation.signup.components.SignUpUsernameField
+import org.sopt.and.presentation.viewmodelfactory.SignUpViewModelFactory
+import org.sopt.and.ui.theme.ANDANDROIDTheme
+import org.sopt.and.ui.theme.Black100
 
 @Composable
 fun SignUpScreen(
-    signViewModel: SignViewModel,
-    onNavigateToSignIn: () -> Unit
+    modifier: Modifier = Modifier,
+    navigateToSignIn: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val snackbarHostState = remember { SnackbarHostState() }
+    val signUpViewModel: SignUpViewModel = viewModel(
+        factory = SignUpViewModelFactory()
+    )
+    val signUpUiState by signUpViewModel.uiState.collectAsStateWithLifecycle()
 
-    var snackbarMessage by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(snackbarMessage) {
-        snackbarMessage?.let {
-            snackbarHostState.showSnackbar(it)
-            snackbarMessage = null // 메시지 초기화
-        }
-    }
-
-    val coroutineScope = rememberCoroutineScope()
-
-    // 상태값 관리
-    var username by remember { mutableStateOf(TextFieldValue("")) }
-    var password by remember { mutableStateOf(TextFieldValue("")) }
-    var hobby by remember { mutableStateOf(TextFieldValue("")) }
-
-    var usernameError by remember { mutableStateOf(false) }
-    var passwordError by remember { mutableStateOf(false) }
-    var hobbyError by remember { mutableStateOf(false) }
-
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-    ) { paddingValues ->
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = Black100)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black)
-                .padding(paddingValues)
-                .padding(15.dp)
+                .weight(1f)
+                .padding(16.dp)
         ) {
-            SignUpTobBar (onNavigateToSignIn)
-            Spacer(modifier = Modifier.height(20.dp))
-            SignTopBar(isSignUp = true)
+            SignUpTopBar()
+
             Spacer(modifier = Modifier.height(30.dp))
 
-            // Username 입력 필드
-            CustomTextField(
-                labelResId = R.string.username_label,
-                textValue = username,
-                onTextChanged = {
-                    username = it
-                    usernameError = username.text.length > 8
-                },
-                showHint = true,
-                hintResId = R.string.sign_up_username_hint,
-                modifier = Modifier.fillMaxWidth()
+            SignUpGreetingText(fontSize = 24)
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            SignUpUsernameField(
+                signUpUsername = signUpUiState.signUpUsername,
+                onSignUpUsernameChange = signUpViewModel::setSignUpUsername
             )
-            if (usernameError) {
-                Text(
-                    text = "8자보다 크면 안됩니다.",
-                    color = Color.Red,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // Password 입력 필드
-            CustomTextField(
-                labelResId = R.string.password_label,
-                textValue = password,
-                onTextChanged = {
-                    password = it
-                    passwordError = password.text.length > 8
-                },
-                isPasswordField = true,
-                isPasswordVisible = signViewModel.isPasswordVisible,
-                onPasswordToggle = {
-                    signViewModel.isPasswordVisible = !signViewModel.isPasswordVisible
-                },
-                showHint = true,
-                hintResId = R.string.sign_up_password_hint,
-                modifier = Modifier.fillMaxWidth()
+            SignUpPasswordField(
+                signUpPassword = signUpUiState.signUpPassword,
+                onSignUpPasswordChange = signUpViewModel::setSignUpPassword,
+                isSignUpPasswordVisible = signUpUiState.isSignUpPasswordVisible,
+                onVisibilityChange = signUpViewModel::changeSignUpPasswordVisibility
             )
-            if (passwordError) {
-                Text(
-                    text = "8자보다 크면 안됩니다.",
-                    color = Color.Red,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // Hobby 입력 필드
-            CustomTextField(
-                labelResId = R.string.hobby_label,
-                textValue = hobby,
-                onTextChanged = {
-                    hobby = it
-                    hobbyError = hobby.text.length > 8
-                },
-                showHint = true,
-                hintResId = R.string.sign_up_hobby_hint,
-                modifier = Modifier.fillMaxWidth()
+            SignUpHobbyField(
+                signUpHobby = signUpUiState.signUpHobby,
+                onSignUpHobbyChange = signUpViewModel::setSignUpHobby
             )
-            if (hobbyError) {
-                Text(
-                    text = "8자보다 크면 안됩니다.",
-                    color = Color.Red,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.size(40.dp))
 
-            // 회원가입 버튼
-            AuthSignButton(
-                buttonText = "회원가입",
-                validateAction = {
-                    // 전체 유효성 검사
+            SnSBox(stringResource(R.string.sign_in_link_with_another_service_title))
+        }
 
+        SignUpButton (
+            signUpUsername = signUpUiState.signUpUsername,
+            signUpPassword = signUpUiState.signUpPassword,
+            signUpHobby = signUpUiState.signUpHobby,
+            onSignUpComplete = navigateToSignIn,
+            signUpViewModel = signUpViewModel
+        )
+    }
+}
 
-                    // 모든 조건을 만족해야 회원가입 요청 실행
-                    !usernameError && !passwordError && !hobbyError
-                },
-                onSuccess = {
-                    signViewModel.performSignUp(
-                        username.text,
-                        password.text,
-                        hobby.text,
-                        onSuccess = {
-                            coroutineScope.launch {
-                                withContext(Dispatchers.Main) {
-                                    snackbarHostState.showSnackbar("회원가입 성공") // 메인 스레드에서 호출
-                                }
-                            }
-                            onNavigateToSignIn()
-                        },
-                        onFailure = { errorMessage ->
-                            coroutineScope.launch {
-                                withContext(Dispatchers.Main) {
-                                    snackbarHostState.showSnackbar(errorMessage) // 메인 스레드에서 호출
-                                }
-                            }
-                        }
-                    )
-                },
-                onFailure = {
-                    coroutineScope.launch {
-                        withContext(Dispatchers.Main) {
-                            snackbarHostState.showSnackbar("입력 값을 확인해주세요.") // 메인 스레드에서 호출
-                        }
-                    }
-                }
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun SignUpScreenPreview() {
+    ANDANDROIDTheme {
+        Scaffold(
+            modifier = Modifier
+                .fillMaxSize()
+        ) { innerPadding ->
+            SignUpScreen(
+                modifier = Modifier
+                    .padding(innerPadding),
+                navigateToSignIn = { }
             )
         }
     }
 }
-
-@Composable
-fun SignUpTobBar(onNavigateToSignIn: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "회원가입",
-            color = Color.White,
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = "❌",
-            color = Color.White,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .clickable { onNavigateToSignIn() }
-        )
-    }
-}
-
-

@@ -1,140 +1,136 @@
 package org.sopt.and.presentation.signin
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.launch
-
 import org.sopt.and.R
-import org.sopt.and.presentation.components.AuthSignButton
-
-import org.sopt.and.presentation.components.CustomTextField
-import org.sopt.and.presentation.components.SignTopBar
-import org.sopt.and.presentation.viewmodelfactory.SignUpViewModelFactory
+import org.sopt.and.presentation.components.SnSBox
+import org.sopt.and.presentation.signin.components.SignInButton
+import org.sopt.and.presentation.signin.components.SignInPasswordField
+import org.sopt.and.presentation.signin.components.SignInToAdditionalFeatures
+import org.sopt.and.presentation.signin.components.SignInTopBar
+import org.sopt.and.presentation.signin.components.SignInUsernameField
+import org.sopt.and.presentation.viewmodelfactory.SignInViewModelFactory
+import org.sopt.and.ui.theme.ANDANDROIDTheme
+import org.sopt.and.ui.theme.Black100
 
 @Composable
 fun SignInScreen(
-    onNavigateToMain: () -> Unit,
-    onNavigateToSignUp: () -> Unit
+    navigateToSignUp: () -> Unit,
+    navigateToMyInfo: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val signUpViewModel: SignUpViewModel = viewModel(
-        factory = SignUpViewModelFactory()
-    )
-    val signUpUiState by signUpViewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
-    var isPasswordVisible by remember { mutableStateOf(false) }
+    val signInViewModel: SignInViewModel = viewModel(
+        factory = SignInViewModelFactory()
+    )
+    val signInUiState by signInViewModel.uiState.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val signInResult by signInViewModel.signInResult.collectAsStateWithLifecycle()
+
+    val signInUsername = signInUiState.signInUsername
+    val signInPassword = signInUiState.signInPassword
+    val isSignInPasswordVisible = signInUiState.isSignInPasswordVisible
+
+    LaunchedEffect(signInResult) {
+        signInViewModel.confirmLogin(
+            snackbarHostState = snackbarHostState,
+            navigateToMyInfo = navigateToMyInfo,
+            context = context,
+            scope = scope
+        )
+    }
 
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-    ) { paddingValues ->
+    ) { innerPadding ->
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
-                .background(Color.Black)
-                .padding(paddingValues)
-                .padding(15.dp)
+                .background(color = Black100)
+                .padding(innerPadding)
         ) {
-            SignTopBar(isSignUp = false)
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // 이메일 입력 필드
-            CustomTextField(
-                labelResId = R.string.email_label,
-                textValue = signViewModel.email,
-                onTextChanged = { signViewModel.email = it },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // 비밀번호 입력 필드 및 show/hide 버튼
-            CustomTextField(
-                labelResId = R.string.password_label,
-                textValue = signViewModel.password,
-                onTextChanged = { signViewModel.password = it },
-                isPasswordField = true,
-                isPasswordVisible = isPasswordVisible,
-                onPasswordToggle = { isPasswordVisible = !isPasswordVisible },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // 로그인 버튼
-            AuthSignButton(
-                buttonText = "로그인",
-                validateAction = {
-                    // 입력 검증
-                    signViewModel.email.text.isNotEmpty() && signViewModel.password.text.isNotEmpty()
-                },
-                onSuccess = {
-                    coroutineScope.launch {
-                        signViewModel.performLogin(
-                            onSuccess = {
-                                // 로그인 성공 시 snackbar 호출
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar("로그인 성공!")
-                                    onNavigateToMain()
-                                }
-                            },
-                            onFailure = { errorMessage ->
-                                // 로그인 실패 시 snackbar 호출
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar(errorMessage)
-                                }
-                            }
-                        )
-                    }
-                },
-                onFailure = {
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar("입력 값을 확인해주세요.")
-                    }
-                }
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // 하단 링크
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "아이디 찾기",
-                    color = Color.White
+                SignInTopBar()
+
+                Spacer(modifier = Modifier.height(60.dp))
+
+                SignInUsernameField(
+                    signInUsername = signInUsername,
+                    onSignInUsernameChange = signInViewModel::setSignInUsername
                 )
 
-                Text(
-                    text = " | ",
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    color = Color.White
+                Spacer(modifier = Modifier.height(5.dp))
+
+                SignInPasswordField(
+                    signInPassword = signInPassword,
+                    onSignInPasswordChange = signInViewModel::setSignInPassword,
+                    isSignInPasswordVisible = isSignInPasswordVisible,
+                    onVisibilityChange = signInViewModel::changeSignInPasswordVisibility
                 )
 
-                Text(
-                    text = "비밀번호 재설정",
-                    color = Color.White
+                Spacer(modifier = Modifier.height(30.dp))
+
+                SignInButton(
+                    signIn = signInViewModel::signIn,
+                    signInUsername = signInUiState.signInUsername,
+                    signInPassword = signInUiState.signInPassword
                 )
 
-                Text(
-                    text = " | ",
-                    color = Color.White
-                )
+                Spacer(modifier = Modifier.height(20.dp))
 
-                Text(
-                    text = "회원가입",
-                    modifier = Modifier.clickable(onClick = onNavigateToSignUp),
-                    color = Color.White
-                )
+                SignInToAdditionalFeatures(navigateToSignUp = navigateToSignUp)
+
+                Spacer(modifier = Modifier.size(40.dp))
+
+                SnSBox(stringResource(R.string.sign_in_link_with_another_service_title))
             }
+        }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun SignInScreenPreview() {
+    ANDANDROIDTheme {
+        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            innerPadding
+            SignInScreen(
+                navigateToSignUp = {},
+                navigateToMyInfo = { }
+            )
         }
     }
 }
