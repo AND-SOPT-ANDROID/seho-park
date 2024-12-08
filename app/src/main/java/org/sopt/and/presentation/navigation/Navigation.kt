@@ -12,13 +12,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import org.sopt.and.presentation.home.HomeScreen
-import org.sopt.and.presentation.myinfo.MyInfoViewModel
 import org.sopt.and.presentation.myinfo.MyInfoScreen
+import org.sopt.and.presentation.myinfo.MyInfoViewModel
 import org.sopt.and.presentation.search.SearchScreen
 import org.sopt.and.presentation.signin.SignInScreen
 import org.sopt.and.presentation.signup.SignUpScreen
 import org.sopt.and.presentation.viewmodelfactory.MyInfoViewModelFactory
-
 
 @Composable
 fun Navigation(
@@ -37,7 +36,7 @@ fun Navigation(
         bottomBar = {
             if (navigationUiState.isBottomNavigationVisible) {
                 WavveBottomNavigation(
-                    items = navigationUiState.wavveBottomNavigationItems,
+                    items = navigationUiState.BottomNavigationItems,
                     navController = navController,
                     setNavigationSelectedScreenIndex = navigationViewModel::setNavigationSelectedIndex,
                     navigationSelectedScreenIndex = navigationUiState.navigationSelectedIndex
@@ -51,9 +50,8 @@ fun Navigation(
         ) {
             composable<Routes.SignIn> {
                 SignInScreen(
-                    onNavigateToSignUp = { navController.navigate(route = Routes.SignUp) },
-                    signViewModel = ,
-                    onNavigateToMain = {
+                    navigateToSignUp = { navController.navigate(route = Routes.SignUp) },
+                    navigateToMyInfo = {
                         navigationViewModel.changeBottomNavigationVisibility()
                         navController.navigate(Routes.MyInfo)
                     }
@@ -62,8 +60,7 @@ fun Navigation(
 
             composable<Routes.SignUp> {
                 SignUpScreen(
-                    signViewModel = ,
-                    onNavigateToSignIn = {
+                    navigateToSignIn = {
                         navController.navigate(
                             route = Routes.SignIn,
                             navOptions = navOptions {
@@ -80,13 +77,12 @@ fun Navigation(
                 MyInfoScreen(
                     paddingValues = innerPadding,
                     myHobby = myInfoUiState.myHobby,
-                    getMyHobby = myInfoViewModel::getMyHobby,
+                    getMyHobby = myInfoViewModel::getMyHobby
                 )
             }
 
             composable<Routes.Home> {
-                HomeScreen(
-                )
+                HomeScreen()
             }
 
             composable<Routes.Search> {

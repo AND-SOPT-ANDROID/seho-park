@@ -129,7 +129,7 @@ fun SignInScreenPreview() {
             innerPadding
             SignInScreen(
                 navigateToSignUp = {},
-                navigateToMyInfo = { }
+                navigateToMyInfo = {}
             )
         }
     }
