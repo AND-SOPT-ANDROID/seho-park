@@ -2,7 +2,7 @@ package org.sopt.and.data.mapper
 
 import org.sopt.and.data.model.request.SignInRequestDto
 import org.sopt.and.data.model.request.SignUpRequestDto
-import org.sopt.and.data.model.response.GetMyHobbyResponseResultDto
+import org.sopt.and.data.model.response.MyHobbyResponseResultDto
 import org.sopt.and.data.model.response.SignInResponseDto
 import org.sopt.and.data.model.response.SignUpResponseDto
 import org.sopt.and.domain.model.MyHobbyEntity
@@ -13,7 +13,7 @@ import org.sopt.and.domain.model.SignUpResponseEntity
 import retrofit2.Response
 
 object Mapper {
-    fun toMyHobbyEntity(getHobbyResponseResultDto: GetMyHobbyResponseResultDto) =
+    fun toMyHobbyEntity(getHobbyResponseResultDto: MyHobbyResponseResultDto) =
         MyHobbyEntity(myHobby = getHobbyResponseResultDto.myHobby)
 
     fun toSignUpResponseEntity(signUpResponseDto: Response<SignUpResponseDto>) =

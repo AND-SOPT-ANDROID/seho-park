@@ -1,4 +1,4 @@
-package org.sopt.and.home
+package org.sopt.and.presentation.home
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image

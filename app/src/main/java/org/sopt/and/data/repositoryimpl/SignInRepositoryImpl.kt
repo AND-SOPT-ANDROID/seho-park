@@ -4,7 +4,7 @@ import org.sopt.and.data.datasource.SignInDataSource
 import org.sopt.and.data.mapper.Mapper
 import org.sopt.and.domain.model.SignInInformationEntity
 import org.sopt.and.domain.model.SignInResponseEntity
-import org.sopt.and.domain.usecase.SignInRepository
+import org.sopt.and.domain.repository.SignInRepository
 
 class SignInRepositoryImpl(
     private val signInDataSource: SignInDataSource

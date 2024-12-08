@@ -1,4 +1,4 @@
-package org.sopt.and.myinfo
+package org.sopt.and.presentation.myinfo
 
 import android.annotation.SuppressLint
 import android.util.Log

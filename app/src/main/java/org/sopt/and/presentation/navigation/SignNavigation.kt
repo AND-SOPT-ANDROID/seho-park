@@ -1,4 +1,4 @@
-package org.sopt.and.navigation
+package org.sopt.and.presentation.navigation
 
 
 sealed class SignNavigation(val route: String) {

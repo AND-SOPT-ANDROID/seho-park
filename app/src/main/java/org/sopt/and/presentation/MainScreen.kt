@@ -1,4 +1,4 @@
-package org.sopt.and
+package org.sopt.and.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
@@ -20,8 +20,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import org.sopt.and.navigation.BottomNavigationGraph
-import org.sopt.and.navigation.BottomNavigation
+import org.sopt.and.presentation.navigation.BottomNavigationGraph
+import org.sopt.and.presentation.navigation.BottomNavigation
 import org.sopt.and.presentation.viewmodel.SignViewModel
 
 @Composable

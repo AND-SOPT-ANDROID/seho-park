@@ -1,4 +1,4 @@
-package org.sopt.and.signin
+package org.sopt.and.presentation.signin
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

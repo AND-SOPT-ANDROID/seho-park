@@ -17,5 +17,5 @@ interface UserService {
     suspend fun signIn(@Body request: SignInRequestDto): Response<SignInResponseDto>
 
     @GET("/user/my-hobby")
-    suspend fun getMyHobby(): GetMyHobbyResponseDto
+    suspend fun getMyHobby(): MyHobbyResponseDto
 }
