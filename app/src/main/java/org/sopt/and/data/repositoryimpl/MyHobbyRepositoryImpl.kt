@@ -3,7 +3,7 @@ package org.sopt.and.data.repositoryimpl
 import org.sopt.and.data.datasource.GetMyHobbyDataSource
 import org.sopt.and.data.mapper.Mapper
 import org.sopt.and.domain.model.MyHobbyEntity
-import org.sopt.and.domain.repository.GetMyHobbyRepository
+import org.sopt.and.domain.usecase.GetMyHobbyRepository
 
 class MyHobbyRepositoryImpl(
     private val getMyHobbyDataSource: GetMyHobbyDataSource
