@@ -18,6 +18,10 @@ import org.sopt.and.signin.SignInScreen
 import org.sopt.and.ui.theme.ANDANDROIDTheme
 import org.sopt.and.viewmodel.SignViewModel
 
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

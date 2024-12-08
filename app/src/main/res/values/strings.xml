@@ -14,4 +14,10 @@
     <string name="ranking_label">오늘의 TOP 20</string>
     <string name="sign_up_passwd">비밀번호는 8~20자 이내로 영문 대소문자, 숫자, 특수문자 중 3가지 이상 혼용하여 입력해주세요</string>
     <string name="sign_up_id">로그인, 비밀번호 찾기, 알림에 사용되니 정확한 이메일을 입력해주세요.</string>
+    <string name="username_label">아이디를 입력해주세요!</string>
+    <string name="sign_up_username_hint">아이디를 입력해주세요.</string>
+    <string name="sign_up_password_hint">비밀번호를 입력해주세요.</string>
+    <string name="hobby_label">취미를 입력해주세요.</string>
+    <string name="sign_up_hobby_hint">취미를 입력해주세요.</string>
+
 </resources>
