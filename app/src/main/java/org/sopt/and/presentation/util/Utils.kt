@@ -25,6 +25,13 @@ object Utils {
     const val GREETING_SECOND_LINE_FOCUS_END_INDEX = 24
     const val GREETING_SECOND_LINE_END_INDEX = 29
 
+    val linkableSNS = listOf<Pair<Int, Int>>(
+        Pair(R.drawable.kakao_talk_icon, R.string.link_kakao_icon_description),
+        Pair(R.drawable.t_world_icon, R.string.link_tworld_icon_description),
+        Pair(R.drawable.naver_icon, R.string.link_naver_icon_description),
+        Pair(R.drawable.facebook_icon, R.string.link_facebook_icon_description),
+        Pair(R.drawable.apple_icon, R.string.link_apple_icon_description),
+    )
 
     fun transformationPasswordVisual(isVisible: Boolean): VisualTransformation =
         if (isVisible) VisualTransformation.None else PasswordVisualTransformation()
