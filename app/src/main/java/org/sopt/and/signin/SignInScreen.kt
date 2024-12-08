@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 import org.sopt.and.R
 import org.sopt.and.components.AuthSignButton
-import org.sopt.and.viewmodel.SignViewModel
+import org.sopt.and.presentation.viewmodel.SignViewModel
 
 import org.sopt.and.components.CustomTextField
 import org.sopt.and.components.SignTopBar

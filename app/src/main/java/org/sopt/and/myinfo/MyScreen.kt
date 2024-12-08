@@ -2,7 +2,6 @@ package org.sopt.and.myinfo
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.annotation.ColorRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -15,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -26,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import org.sopt.and.viewmodel.SignViewModel
+import org.sopt.and.presentation.viewmodel.SignViewModel
 
 enum class BottomNavItem(val icon: ImageVector, val description: String) {
     Home(Icons.Default.Home, "홈"),

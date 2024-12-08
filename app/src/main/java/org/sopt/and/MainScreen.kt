@@ -22,7 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.sopt.and.navigation.BottomNavigationGraph
 import org.sopt.and.navigation.BottomNavigation
-import org.sopt.and.viewmodel.SignViewModel
+import org.sopt.and.presentation.viewmodel.SignViewModel
 
 @Composable
 fun MainScreen(signViewModel: SignViewModel) {

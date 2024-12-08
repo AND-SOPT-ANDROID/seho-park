@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import org.sopt.and.home.HomeScreen
 import org.sopt.and.myinfo.MyScreen
 import org.sopt.and.search.SearchScreen
-import org.sopt.and.viewmodel.SignViewModel
+import org.sopt.and.presentation.viewmodel.SignViewModel
 
 
 @Composable

@@ -1,6 +1,5 @@
 package org.sopt.and.signup
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.sopt.and.R
 import org.sopt.and.components.AuthSignButton
-import org.sopt.and.viewmodel.SignViewModel
+import org.sopt.and.presentation.viewmodel.SignViewModel
 import org.sopt.and.components.CustomTextField
 import org.sopt.and.components.SignTopBar
 

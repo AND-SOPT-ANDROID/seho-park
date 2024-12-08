@@ -1,4 +1,4 @@
-package org.sopt.and.viewmodel
+package org.sopt.and.presentation.viewmodel
 
 import android.app.Application
 import android.content.SharedPreferences
@@ -155,11 +155,11 @@ class SignViewModel @Inject constructor(
 
     private fun isPasswordComplexEnough(password: String): Boolean {
         val criteriaCount = listOf(
-            Constants.LOWER_CASE_REGEX.containsMatchIn(password),
-            Constants.UPPER_CASE_REGEX.containsMatchIn(password),
-            Constants.DIGIT_REGEX.containsMatchIn(password),
-            Constants.SPECIAL_REGEX.containsMatchIn(password)
+            LOWER_CASE_REGEX.containsMatchIn(password),
+            UPPER_CASE_REGEX.containsMatchIn(password),
+            DIGIT_REGEX.containsMatchIn(password),
+            SPECIAL_REGEX.containsMatchIn(password)
         ).count { it }
-        return criteriaCount >= Constants.PASSWORD_CRITERIA_COUNT
+        return criteriaCount >= PASSWORD_CRITERIA_COUNT
     }
 }
