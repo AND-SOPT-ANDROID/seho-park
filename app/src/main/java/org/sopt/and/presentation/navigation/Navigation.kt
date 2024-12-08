@@ -51,8 +51,9 @@ fun Navigation(
         ) {
             composable<Routes.SignIn> {
                 SignInScreen(
-                    navigateToSignUp = { navController.navigate(route = Routes.SignUp) },
-                    navigateToMyInfo = {
+                    onNavigateToSignUp = { navController.navigate(route = Routes.SignUp) },
+                    signViewModel = ,
+                    onNavigateToMain = {
                         navigationViewModel.changeBottomNavigationVisibility()
                         navController.navigate(Routes.MyInfo)
                     }
@@ -61,7 +62,8 @@ fun Navigation(
 
             composable<Routes.SignUp> {
                 SignUpScreen(
-                    navigateToSignIn = {
+                    signViewModel = ,
+                    onNavigateToSignIn = {
                         navController.navigate(
                             route = Routes.SignIn,
                             navOptions = navOptions {
@@ -78,7 +80,7 @@ fun Navigation(
                 MyScreen(
                     paddingValues = innerPadding,
                     myHobby = myInfoUiState.myHobby,
-                    getMyHobby = myInfoViewModel::getMyHobby
+                    getMyHobby = myInfoViewModel::getMyHobby,
                 )
             }
 

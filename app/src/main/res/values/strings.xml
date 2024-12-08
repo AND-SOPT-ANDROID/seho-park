@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AND-ANDROID</string>
+
     <string name="email_label">이메일 주소 또는 아이디</string>
     <string name="password_label">비밀번호</string>
     <string name="login_label">로그인</string>
@@ -25,6 +25,82 @@
     <string name="bottom_navigation_home_label">홈</string>
     <string name="bottom_navigation_search_label">검색</string>
     <string name="bottom_navigation_my_info_label">My</string>
+
+
+    <!--common-->
+    <string name="app_name">wavve</string>
+    <string name="seperator">|</string>
+    <string name="hide_password_button">hide</string>
+    <string name="show_password_button">show</string>
+    <string name="link_kakao_icon_description">카카오 계정과 연동하는 아이콘</string>
+    <string name="link_tworld_icon_description">T World 계정과 연동하는 아이콘</string>
+    <string name="link_naver_icon_description">네이버 계정과 연동하는 아이콘</string>
+    <string name="link_facebook_icon_description">페이스북 계정과 연동하는 아이콘</string>
+    <string name="link_apple_icon_description">애플 계정과 연동하는 아이콘</string>
+    <string name="link_with_another_service_description">• SNS계정으로 간편하게 가입하여 서비스를 이용하실 수 있습니다.\n
+  기존 POOQ 계정 또는 Wavve 계정과는 연동되지 않으니 이용에 참고하세요.</string>
+
+
+    <!--signup-->
+    <string name="sign_up_screen_title">회원가입</string>
+    <string name="sign_up_username_placeholder">wavve Username 설정</string>
+    <string name="sign_up_password_placeholder">wavve 비밀번호 설정</string>
+    <string name="sign_up_hobby_placeholder">취미입력 ex)soccer</string>
+    <string name="sign_up_button">Wavve 회원가입</string>
+    <string name="sign_up_success">회원가입에 성공했습니다~</string>
+    <string name="sign_up_failed_duplicate_username">Username이 중복되었습니다!</string>
+    <string name="sign_up_failed_information_length">username, 비밀번호, 취미는 8자 이하로 입력해주세요!</string>
+    <string name="sign_up_password_caution">비밀번호는 8자 이하로 입력해 주세요</string>
+    <string name="sign_up_username_caution">Username는 8자 이하로 입력해 주세요</string>
+    <string name="sign_up_username_description">Username 입력시 주의사항</string>
+    <string name="sign_up_password_description">비밀번호 입력시 주의사항</string>
+    <string name="sign_up_close_description">회원가입 화면 닫기</string>
+    <string name="sign_up_welcome_text">이메일과 비밀번호만으로\nWavve를 즐길 수 있어요!</string>
+    <string name="sign_up_link_with_another_service_title">또는 다른 서비스 계정으로 가입</string>
+
+    <!--signin-->
+    <string name="sign_in_button">로그인</string>
+    <string name="sign_in_to_find_id_button">아이디 찾기</string>
+    <string name="sign_in_to_reset_password_button">비밀번호 재설정</string>
+    <string name="sign_in_to_sign_up_button">회원가입</string>
+    <string name="sign_in_username_placeholder">Username</string>
+    <string name="sign_in_password_placeholder">비밀번호</string>
+    <string name="sign_in_success_message">로그인 성공. 환영합니다~</string>
+    <string name="sign_in_failed_password_length">로그인 실패. 비밀번호는 8자리 이하입니다!</string>
+    <string name="sign_in_failed_wrong_password">로그인 실패. 비밀번호가 일치하지 않습니다!</string>
+    <string name="sign_in_to_back_screen_description">이전 화면으로 가기</string>
+    <string name="sign_in_link_with_another_service_title">또는 다른 서비스 계정으로 로그인</string>
+
+
+    <!--my-->
+    <string name="my_account_icon_description">내 프로필</string>
+    <string name="my_notification_icon_description">알림</string>
+    <string name="my_setting_icon_description">설정</string>
+    <string name="my_to_payment_button">구매하기 ></string>
+    <string name="my_no_ticket_text">현재 보유하신 이용권이 없습니다.</string>
+    <string name="my_first_payment_text">첫 결제 시 첫 달 100원!</string>
+    <string name="my_viewing_history_box_title">전체 시청내역</string>
+    <string name="my_viewing_history_box_empty_text">시청내역이 없어요.</string>
+    <string name="my_program_of_interest_box_title">관심 프로그램</string>
+    <string name="my_program_of_interest_empty_text">관심 프로그램이 없어요.</string>
+
+    <!--home-->
+    <string name="home_picks_of_editor_title">믿고 보는 웨이브 에디터 추천작</string>
+    <string name="home_top20_title">오늘의 TOP 20</string>
+    <string name="home_banner_indicator_front">%1$s&#160;</string>
+    <string name="home_banner_indicator_back">| %1$s</string>
+
+    <!--bottom_navigation-->
+
+
+    <!--genre-->
+    <string name="genre_new_classic">뉴클래식</string>
+    <string name="genre_drama">드라마</string>
+    <string name="genre_entertainment">예능</string>
+    <string name="genre_movie">영화</string>
+    <string name="genre_animation">애니</string>
+    <string name="genre_foreign_country_series">해외시리즈</string>
+    <string name="home_rank_of_item">%1$s</string>
 
 
 </resources>

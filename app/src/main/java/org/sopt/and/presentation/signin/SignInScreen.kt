@@ -8,21 +8,25 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 
 import org.sopt.and.R
-import org.sopt.and.components.AuthSignButton
-import org.sopt.and.presentation.viewmodel.SignViewModel
+import org.sopt.and.presentation.components.AuthSignButton
 
-import org.sopt.and.components.CustomTextField
-import org.sopt.and.components.SignTopBar
+import org.sopt.and.presentation.components.CustomTextField
+import org.sopt.and.presentation.components.SignTopBar
+import org.sopt.and.presentation.viewmodelfactory.SignUpViewModelFactory
 
 @Composable
 fun SignInScreen(
-    signViewModel: SignViewModel,
     onNavigateToMain: () -> Unit,
     onNavigateToSignUp: () -> Unit
 ) {
+    val signUpViewModel: SignUpViewModel = viewModel(
+        factory = SignUpViewModelFactory()
+    )
+    val signUpUiState by signUpViewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
