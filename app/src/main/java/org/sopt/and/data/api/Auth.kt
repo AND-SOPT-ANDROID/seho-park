@@ -1,9 +1,9 @@
-package org.sopt.and.api
+package org.sopt.and.data.api
 
-import org.sopt.and.dto.RequestLoginData
-import org.sopt.and.dto.RequestUserRegistrationData
-import org.sopt.and.dto.ResponseLogin
-import org.sopt.and.dto.ResponseUserRegistration
+import org.sopt.and.data.api.dto.RequestLoginData
+import org.sopt.and.data.api.dto.RequestUserRegistrationData
+import org.sopt.and.data.api.dto.ResponseLogin
+import org.sopt.and.data.api.dto.ResponseUserRegistration
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

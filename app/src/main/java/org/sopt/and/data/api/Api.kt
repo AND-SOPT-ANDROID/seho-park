@@ -1,4 +1,4 @@
-package org.sopt.and.api
+package org.sopt.and.data.api
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module

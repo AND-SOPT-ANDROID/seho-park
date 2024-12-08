@@ -12,12 +12,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.sopt.and.api.HobbyService
-import org.sopt.and.api.LoginService
-import org.sopt.and.api.UserRegistrationService
-import org.sopt.and.dto.RequestLoginData
-import org.sopt.and.dto.RequestUserRegistrationData
-import org.sopt.and.dto.ResponseUserRegistration
+import org.sopt.and.data.api.HobbyService
+import org.sopt.and.data.api.LoginService
+import org.sopt.and.data.api.UserRegistrationService
+import org.sopt.and.data.api.dto.RequestLoginData
+import org.sopt.and.data.api.dto.RequestUserRegistrationData
+import org.sopt.and.data.api.dto.ResponseUserRegistration
 import javax.inject.Inject
 
 @HiltViewModel
