@@ -35,7 +35,7 @@ fun Navigation(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             if (navigationUiState.isBottomNavigationVisible) {
-                WavveBottomNavigation(
+                BottomNavigation(
                     items = navigationUiState.BottomNavigationItems,
                     navController = navController,
                     setNavigationSelectedScreenIndex = navigationViewModel::setNavigationSelectedIndex,
@@ -82,7 +82,9 @@ fun Navigation(
             }
 
             composable<Routes.Home> {
-                HomeScreen()
+                HomeScreen(
+                    innerPadding = innerPadding
+                )
             }
 
             composable<Routes.Search> {

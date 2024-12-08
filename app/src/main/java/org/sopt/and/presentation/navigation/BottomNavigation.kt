@@ -28,7 +28,7 @@ import org.sopt.and.ui.theme.Grey100
 import org.sopt.and.ui.theme.Grey200
 
 @Composable
-fun WavveBottomNavigation(
+fun BottomNavigation(
     items: List<BottomNavigationItem>,
     navController: NavController,
     setNavigationSelectedScreenIndex: (Int) -> Unit,
@@ -83,7 +83,7 @@ fun WavveBottomNavigation(
 @Composable
 fun WavveBottomNavigationPreview() {
     val index = remember { mutableIntStateOf(0) }
-    WavveBottomNavigation(
+    BottomNavigation(
         listOf(
             BottomNavigationItem(
                 label = R.string.bottom_navigation_home_label,
