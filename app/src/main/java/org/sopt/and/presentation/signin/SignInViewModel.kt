@@ -1,130 +1,82 @@
-package org.sopt.and.presentation.signin
+package org.sopt.and.presentation.auth.signin.viewmodel
 
-import android.content.Context
-import androidx.compose.material3.SnackbarHostState
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.sopt.and.R
-import org.sopt.and.data.service.AppContext
-import org.sopt.and.data.service.TokenManager
-import org.sopt.and.domain.model.SignInInformationEntity
-import org.sopt.and.domain.model.SignInResponseEntity
+import org.sopt.and.core.utils.PreferenceUtil
+import org.sopt.and.domain.entity.BaseResult
+import org.sopt.and.domain.entity.UserData
 import org.sopt.and.domain.usecase.SignInUseCase
-import org.sopt.and.presentation.util.Utils.showSnackbar
+import org.sopt.and.presentation.auth.signin.SignInContract.SignInUiEffect
+import org.sopt.and.presentation.auth.signin.SignInContract.SignInUiEvent
+import org.sopt.and.presentation.auth.signin.SignInContract.SignInUiState
+import org.sopt.and.presentation.util.BaseViewModel
+import javax.inject.Inject
 
-class SignInViewModel(
-    private val signInUseCase: SignInUseCase
-) : ViewModel() {
-    private val tokenManager = TokenManager(AppContext.get())
-
-    private val _uiState = MutableStateFlow(SignInUiState())
-    val uiState: StateFlow<SignInUiState> = _uiState.asStateFlow()
-
-    private val _signInResult = MutableStateFlow<SignInResult>(SignInResult.Initial)
-    val signInResult: StateFlow<SignInResult> = _signInResult.asStateFlow()
-
-    private fun initSignInResult() {
-        _signInResult.value = SignInResult.Initial
-    }
-
-    fun setSignInUsername(signInUsername: String) {
-        _uiState.value = _uiState.value.copy(
-            signInUsername = signInUsername
-        )
-    }
-
-    fun setSignInPassword(signInPassword: String) {
-        _uiState.value = _uiState.value.copy(
-            signInPassword = signInPassword
-        )
-    }
-
-    fun changeSignInPasswordVisibility() {
-        _uiState.value = _uiState.value.copy(
-            isSignInPasswordVisible = !_uiState.value.isSignInPasswordVisible
-        )
-    }
-
-    fun signIn(
-        signInUsername: String,
-        signInPassword: String
-    ) {
-        viewModelScope.launch {
-            signInUseCase(
-                request = SignInInformationEntity(
-                    username = signInUsername,
-                    password = signInPassword
+@HiltViewModel
+class SignInViewModel @Inject constructor(
+    private val loginUseCase: SignInUseCase,
+    private val preferenceUtil: PreferenceUtil
+) : BaseViewModel<SignInUiState, SignInUiEvent, SignInUiEffect>(SignInUiState()) {
+    override fun reduceState(event: SignInUiEvent) {
+        when (event) {
+            is SignInUiEvent.UpdateUserName -> {
+                updateState(
+                    currentState.copy(
+                        username = event.username
+                    )
                 )
-            ).onSuccess { signInResponseEntity: SignInResponseEntity ->
-                if (signInResponseEntity.status == 200) {
-                    _signInResult.value = SignInResult.Success
-                    signInResponseEntity.token?.let { token ->
-                        tokenManager.saveToken(token)
+            }
+
+            is SignInUiEvent.UpdatePassword -> {
+                updateState(
+                    currentState.copy(
+                        password = event.password
+                    )
+                )
+            }
+
+            is SignInUiEvent.SignInFormSubmit -> signIn()
+
+            is SignInUiEvent.NavigateUp -> postEffect(SignInUiEffect.NavigateUp)
+        }
+    }
+
+    fun signIn() {
+        updateState(
+            currentState.copy(
+                isLoading = true
+            )
+        )
+        viewModelScope.launch {
+            when (
+                val result = loginUseCase(
+                    with(currentState) {
+                        UserData(username, password, "")
                     }
-                } else if (signInResponseEntity.code == SignInFailureCase.FAILURE_LENGTH.errorCode
-                    && signInResponseEntity.status == SignInFailureCase.FAILURE_LENGTH.statusCode
-                ) {
-                    _signInResult.value = SignInResult.FailurePasswordLength
-                } else if (signInResponseEntity.code == SignInFailureCase.FAILURE_WRONG_PASSWORD.errorCode
-                    && signInResponseEntity.status == SignInFailureCase.FAILURE_WRONG_PASSWORD.statusCode
-                ) {
-                    _signInResult.value = SignInResult.FailureWrongPassword
+                )
+            ) {
+                is BaseResult.Success -> {
+                    updateState(
+                        currentState.copy(
+                            isLoading = false
+                        )
+                    )
+                    preferenceUtil.saveUserToken(result.data.token)
+                    postEffect(SignInUiEffect.ShowSuccessSnackBar)
+                    postEffect(SignInUiEffect.NavigateToMy)
+                }
+
+                is BaseResult.Error -> {
+                    updateState(
+                        currentState.copy(
+                            isLoading = false,
+                            errorMessage = result.message
+                        )
+                    )
+                    postEffect(SignInUiEffect.ShowErrorSnackBar(result.message))
                 }
             }
         }
-    }
-
-    fun confirmLogin(
-        snackbarHostState: SnackbarHostState,
-        navigateToMyInfo: () -> Unit,
-        context: Context,
-        scope: CoroutineScope
-    ) {
-        when (signInResult.value) {
-            is SignInResult.Success -> {
-                context.showSnackbar(
-                    scope = scope,
-                    snackbarHostState = snackbarHostState,
-                    message = R.string.sign_in_success_message,
-                )
-                navigateToMyInfo()
-                initSignInResult()
-            }
-
-            is SignInResult.FailurePasswordLength -> {
-                context.showSnackbar(
-                    scope = scope,
-                    snackbarHostState = snackbarHostState,
-                    message = R.string.sign_in_failed_password_length,
-                )
-                initSignInResult()
-            }
-
-            is SignInResult.FailureWrongPassword -> {
-                context.showSnackbar(
-                    scope = scope,
-                    snackbarHostState = snackbarHostState,
-                    message = R.string.sign_in_failed_wrong_password,
-                )
-                initSignInResult()
-            }
-
-            else -> {}
-        }
-    }
-}
-
-data class SignInFailureCase(
-    val statusCode: Int,
-    val errorCode: String
-) {
-    companion object {
-        val FAILURE_LENGTH = SignInFailureCase(statusCode = 400, errorCode = "01")
-        val FAILURE_WRONG_PASSWORD = SignInFailureCase(statusCode = 403, errorCode = "01")
     }
 }

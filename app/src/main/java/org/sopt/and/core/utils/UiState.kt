@@ -1,4 +1,4 @@
-package org.sopt.and.core.util
+package org.sopt.and.core.utils
 
 sealed class UiState<out T> {
     object Loading : UiState<Nothing>()

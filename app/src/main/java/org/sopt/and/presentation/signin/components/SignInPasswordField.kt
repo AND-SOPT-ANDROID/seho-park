@@ -11,15 +11,11 @@ fun SignInPasswordField(
     signInPassword: String,
     onSignInPasswordChange: (String) -> Unit,
     isSignInPasswordVisible: Boolean,
-    onVisibilityChange: () -> Unit
 ) {
     SignInOrSignUpTextField(
         information = signInPassword,
         onValueChange = onSignInPasswordChange,
         placeholder = R.string.sign_in_password_placeholder,
         visualTransformation = transformationPasswordVisual(isSignInPasswordVisible),
-        trailingIcon = {
-            ShowOrHideToggle(isSignInPasswordVisible, onVisibilityChange)
-        }
     )
 }

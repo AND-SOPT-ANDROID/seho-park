@@ -1,12 +1,15 @@
 package org.sopt.and.domain.usecase
 
-import org.sopt.and.domain.model.SignInInformationEntity
-import org.sopt.and.domain.model.SignInResponseEntity
+import org.sopt.and.domain.entity.BaseResult
+import org.sopt.and.domain.entity.UserData
+import org.sopt.and.domain.entity.UserLoginResult
 import org.sopt.and.domain.repository.SignInRepository
+import javax.inject.Inject
 
-class SignInUseCase(
-    private val signInRepository: SignInRepository
+class SignInUseCase @Inject constructor(
+    private val userLoginRepository: SignInRepository
 ) {
-    suspend operator fun invoke(request: SignInInformationEntity): Result<SignInResponseEntity> =
-        signInRepository.signIn(request = request)
+    suspend operator fun invoke(user: UserData): BaseResult<UserLoginResult> {
+        return userLoginRepository.loginUser(user)
+    }
 }

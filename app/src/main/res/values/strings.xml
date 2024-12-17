@@ -103,4 +103,89 @@
     <string name="home_rank_of_item">%1$s</string>
 
 
+
+    <!--SignIn-->
+    <string name="sign_in_text_field_id_hint">사용자 이름</string>
+    <string name="sign_in_text_field_password_hint">비밀번호</string>
+    <string name="sign_in_text_login">로그인</string>
+    <string name="sign_in_text_find_id">아이디 찾기</string>
+    <string name="sign_in_text_divider">|</string>
+    <string name="sign_in_text_password_reset">비밀번호 재설정</string>
+    <string name="sign_in_text_sign_up">회원가입</string>
+    <string name="sign_in_text_other_service">또는 다른 서비스 계정으로 로그인</string>
+    <string name="sign_in_text_information">SNS계정으로 간편하게 가입하여 서비스를 이용하실 수 있습니다. 기존 POOQ 계정 또는 Wavve 계정과는 연동되지 않으니 이용에 참고하세요.</string>
+    <string name="sign_in_snackbar_login_success">로그인 성공</string>
+    <string name="sign_in_snackbar_enter_id_password">아이디와 비밀번호를 입력해주세요</string>
+    <string name="sign_in_snackbar_error_id_pw">아이디 혹은 비밀번호가 틀렸습니다.</string>
+    <string name="sign_in_snackbar_action_close">닫기</string>
+    <string name="sign_in_text_field_hide">hide</string>
+    <string name="sign_in_text_field_show">show</string>
+
+    <!--SignUp-->
+    <string name="sign_up_text_sign_up">회원가입</string>
+    <string name="sign_up_text_invalid_id">입력하신 아이디가 형식에 맞지 않습니다. 아이디는 8자 이내로 입력해주세요.</string>
+    <string name="sign_up_text_valid_id">아이디는 8자 이내로 입력해주세요.</string>
+    <string name="sign_up_text_invalid_password">입력하신 비밀번호가 형식에 맞지 않습니다. 비밀번호는 8자 이내로 입력해주세요.</string>
+    <string name="sign_up_text_valid_password">비밀번호는 8자 이내로 입력해주세요.</string>
+    <string name="sign_up_text_invalid_hobby">입력하신 취미가 형식에 맞지 않습니다. 취미는 8자 이내로 입력해 주세요.</string>
+    <string name="sign_up_text_valid_hobby">취미는 8자 이내로 입력해주세요.</string>
+    <string name="sign_up_text_field_hint_password">Wavve 비밀번호 설정</string>
+    <string name="sign_up_text_other_service">또는 다른 서비스 계정으로 로그인</string>
+    <string name="sign_up_text_information">SNS계정으로 간편하게 가입하여 서비스를 이용하실 수 있습니다. 기존 POOQ 계정 또는 Wavve 계정과는 연동되지 않으니 이용에 참고하세요.</string>
+    <string name="sign_up_toast_success">회원가입을 완료하였습니다.</string>
+    <string name="sign_up_toast_failed">아이디, 비밀번호, 취미를 양식에 맞게 작성해주세요</string>
+    <string name="sign_up_text_wavve_sign_up">Wavve 회원가입</string>
+    <string name="sign_up_text_welcome">아이디와 비밀번호, 취미 만으로\nWavve를 즐길 수 있어요!</string>
+    <string name="sign_up_button_hide">hide</string>
+    <string name="sign_up_button_show">show</string>
+    <string name="sign_up_text_field_hint_id">아이디</string>
+    <string name="sign_up_text_field_hint_hobby">취미</string>
+
+    <string name="sign_image_description_kakao">KaKao Account</string>
+    <string name="sign_image_description_t">T Account</string>
+    <string name="sign_image_description_naver">Naver Account</string>
+    <string name="sign_image_description_facebook">FaceBook Account</string>
+    <string name="sign_image_description_apple">Apple Account</string>
+
+    <!--TopBar-->
+    <string name="back_button_top_bar_icon_description_logo">Logo</string>
+    <string name="back_button_top_bar_icon_description_back">back</string>
+    <string name="close_top_bar_icon_description_close">Close</string>
+
+    <!--MyPage-->
+    <string name="my_page_image_description_profile">profile image</string>
+    <string name="my_page_icon_description_notification">notification</string>
+    <string name="my_page_image_description_setting">setting</string>
+    <string name="my_page_text_promotion_month">첫 결제 시 첫 달 100원!</string>
+    <string name="my_page_text_no_ticket">현재 보유하신 이용권이 없습니다.</string>
+    <string name="my_page_text_title_watch">전체 시청내역</string>
+    <string name="my_page_text_empty_watch">시청내역이 없어요.</string>
+    <string name="my_page_text_title_interest">관심 프로그램</string>
+    <string name="my_page_text_empty_interest">관심 프로그램이 없어요.</string>
+    <string name="my_page_text_logout">로그아웃</string>
+    <string name="my_page_toast_success_logout">로그아웃 되었습니다.</string>
+
+    <string name="my_page_promotion_text_buying">구매하기</string>
+    <string name="my_page_icon_description_purchase">purchase</string>
+    <string name="my_page_contents_image_description_no_content">No Content</string>
+    <string name="home_icon_description_more">more</string>
+
+    <!-- Title -->
+    <string name="title_sign_up">회원가입</string>
+    <string name="title_home">홈</string>
+    <string name="title_my">MY</string>
+    <string name="title_search">검색</string>
+    <string name="type_new_classic">뉴클래식</string>
+    <string name="type_drama">드라마</string>
+    <string name="type_entertainment">예능</string>
+    <string name="type_movie">영화</string>
+    <string name="type_animation">애니</string>
+    <string name="type_abroad_series">해외시리즈</string>
+    <string name="type_information_culture">시사교양</string>
+    <string name="type_kids">키즈</string>
+    <string name="type_movie_plus">영화플러스</string>
+    <string name="common_top_bar_icon_description_live">live button</string>
+
+
+
 </resources>

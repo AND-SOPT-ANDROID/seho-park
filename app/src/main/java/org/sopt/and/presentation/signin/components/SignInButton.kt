@@ -1,43 +1,37 @@
-package org.sopt.and.presentation.signin.components
+package org.sopt.and.presentation.auth.signin.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import org.sopt.and.R
+import androidx.compose.ui.unit.sp
 import org.sopt.and.ui.theme.Blue100
 import org.sopt.and.ui.theme.White100
 
 @Composable
 fun SignInButton(
-    signIn: (String, String) -> Unit,
-    signInUsername: String,
-    signInPassword: String
+    text: String,
+    onClick : () -> Unit,
+    modifier: Modifier
 ) {
-
     Button(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(50.dp),
-        onClick = {
-            signIn(
-                signInUsername, signInPassword
-            )
-        },
-        shape = RoundedCornerShape(50.dp),
+            .padding(horizontal = 8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Blue100,
-            contentColor = White100
-        )
+            containerColor = Blue100
+        ),
+        onClick = onClick,
     ) {
         Text(
-            text = stringResource(id = R.string.sign_in_button)
+            text = text,
+            color = White100,
+            fontSize = 16.sp,
+            modifier = modifier.padding(vertical = 8.dp)
         )
     }
 }

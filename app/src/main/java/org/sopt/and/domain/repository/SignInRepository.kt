@@ -1,21 +1,10 @@
 package org.sopt.and.domain.repository
 
-import org.sopt.and.data.datasource.SignInDataSource
-import org.sopt.and.data.repositoryimpl.SignInRepositoryImpl
-import org.sopt.and.data.service.ServicePool
-import org.sopt.and.domain.model.SignInInformationEntity
-import org.sopt.and.domain.model.SignInResponseEntity
+
+import org.sopt.and.domain.entity.BaseResult
+import org.sopt.and.domain.entity.UserLoginResult
+
 
 interface SignInRepository {
-    suspend fun signIn(request: SignInInformationEntity): Result<SignInResponseEntity>
-
-    companion object {
-        fun create(): SignInRepositoryImpl {
-            return SignInRepositoryImpl(
-                SignInDataSource(
-                    ServicePool.userService
-                )
-            )
-        }
-    }
+    suspend fun loginUser(user: org.sopt.and.domain.entity.UserData): BaseResult<UserLoginResult>
 }

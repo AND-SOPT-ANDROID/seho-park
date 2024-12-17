@@ -1,72 +1,73 @@
 package org.sopt.and.presentation.signin
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.sopt.and.R
+import org.sopt.and.core.utils.SnackBarUtils
+import org.sopt.and.presentation.auth.signin.SignInContract
+import org.sopt.and.presentation.auth.signin.component.SignInButton
+import org.sopt.and.presentation.auth.signin.viewmodel.SignInViewModel
 import org.sopt.and.presentation.components.SnSBox
-import org.sopt.and.presentation.signin.components.SignInButton
-import org.sopt.and.presentation.signin.components.SignInPasswordField
-import org.sopt.and.presentation.signin.components.SignInToAdditionalFeatures
-import org.sopt.and.presentation.signin.components.SignInTopBar
-import org.sopt.and.presentation.signin.components.SignInUsernameField
-import org.sopt.and.presentation.viewmodelfactory.SignInViewModelFactory
-import org.sopt.and.ui.theme.ANDANDROIDTheme
+import org.sopt.and.presentation.signin.components.*
 import org.sopt.and.ui.theme.Black100
+
 
 @Composable
 fun SignInScreen(
+    navigateToMy: () -> Unit,
     navigateToSignUp: () -> Unit,
-    navigateToMyInfo: () -> Unit,
+    navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: SignInViewModel = hiltViewModel(),
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    val signInViewModel: SignInViewModel = viewModel(
-        factory = SignInViewModelFactory()
-    )
-    val signInUiState by signInViewModel.uiState.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
+    val signInState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    val signInResult by signInViewModel.signInResult.collectAsStateWithLifecycle()
+    // Effect handling
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is SignInContract.SignInUiEffect.ShowSuccessSnackBar -> {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        SnackBarUtils.showSnackBar(
+                            message = context.getString(R.string.sign_in_snackbar_login_success),
+                            actionLabel = context.getString(R.string.sign_in_snackbar_action_close)
+                        )
+                    }
+                    navigateToMy()
+                }
 
-    val signInUsername = signInUiState.signInUsername
-    val signInPassword = signInUiState.signInPassword
-    val isSignInPasswordVisible = signInUiState.isSignInPasswordVisible
+                is SignInContract.SignInUiEffect.ShowErrorSnackBar -> {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        SnackBarUtils.showSnackBar(
+                            message = effect.message,
+                            actionLabel = context.getString(R.string.sign_in_snackbar_action_close)
+                        )
+                    }
+                }
 
-    LaunchedEffect(signInResult) {
-        signInViewModel.confirmLogin(
-            snackbarHostState = snackbarHostState,
-            navigateToMyInfo = navigateToMyInfo,
-            context = context,
-            scope = scope
-        )
+                is SignInContract.SignInUiEffect.NavigateToSignUp -> navigateToSignUp()
+                is SignInContract.SignInUiEffect.NavigateToMy -> navigateToMy()
+                is SignInContract.SignInUiEffect.NavigateUp -> navigateUp()
+            }
+        }
     }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        snackbarHost = { viewModel.sendEvent(SignInContract.SignInUiEvent.NavigateUp) }
     ) { innerPadding ->
         Column(
             modifier = modifier
@@ -85,26 +86,38 @@ fun SignInScreen(
                 Spacer(modifier = Modifier.height(60.dp))
 
                 SignInUsernameField(
-                    signInUsername = signInUsername,
-                    onSignInUsernameChange = signInViewModel::setSignInUsername
+                    signInUsername = signInState.username,
+                    onSignInUsernameChange = {
+                        viewModel.sendEvent(
+                            SignInContract.SignInUiEvent.UpdateUserName(
+                                it
+                            )
+                        )
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(5.dp))
 
                 SignInPasswordField(
-                    signInPassword = signInPassword,
-                    onSignInPasswordChange = signInViewModel::setSignInPassword,
-                    isSignInPasswordVisible = isSignInPasswordVisible,
-                    onVisibilityChange = signInViewModel::changeSignInPasswordVisibility
+                    signInPassword = signInState.password,
+                    onSignInPasswordChange = {
+                        viewModel.sendEvent(
+                            SignInContract.SignInUiEvent.UpdatePassword(
+                                it
+                            )
+                        )
+                    },
+                    isSignInPasswordVisible = false,
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
 
                 SignInButton(
-                    signIn = signInViewModel::signIn,
-                    signInUsername = signInUiState.signInUsername,
-                    signInPassword = signInUiState.signInPassword
+                    text = stringResource(R.string.sign_in_text_login),
+                    onClick = { viewModel.signIn() },
+                    modifier = Modifier
                 )
+
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -114,23 +127,6 @@ fun SignInScreen(
 
                 SnSBox(stringResource(R.string.sign_in_link_with_another_service_title))
             }
-        }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
-@Composable
-fun SignInScreenPreview() {
-    ANDANDROIDTheme {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            innerPadding
-            SignInScreen(
-                navigateToSignUp = {},
-                navigateToMyInfo = {}
-            )
         }
     }
 }
