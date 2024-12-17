@@ -1,116 +1,134 @@
-package org.sopt.and.presentation.signup
+package org.sopt.and.presentation.auth.signup.viewmodel
 
-import android.content.Context
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.sopt.and.R
-import org.sopt.and.domain.model.SignUpInformationEntity
+import org.sopt.and.domain.entity.BaseResult
+import org.sopt.and.domain.entity.UserData
 import org.sopt.and.domain.usecase.SignUpUseCase
-import org.sopt.and.presentation.util.Utils.showToast
+import org.sopt.and.presentation.auth.signup.SignUpContract
+import org.sopt.and.presentation.auth.signup.SignUpContract.SignUpUiEffect
+import org.sopt.and.presentation.auth.signup.SignUpContract.SignUpUiState
+import org.sopt.and.presentation.auth.signup.SignUpContract.SignUpUiEvent
+import org.sopt.and.presentation.util.BaseViewModel
+import javax.inject.Inject
 
-
-class SignUpViewModel(
-    private val signUpUseCase: SignUpUseCase
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(SignUpUiState())
-    val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
-
-    private val _signUpResult = MutableStateFlow<SignUpResult>(SignUpResult.Initial)
-    val signUpResult: StateFlow<SignUpResult> = _signUpResult.asStateFlow()
-
-    private fun initSignUpResult() {
-        _signUpResult.value = SignUpResult.Initial
-    }
-
-    fun setSignUpUsername(signUpUsername: String) {
-        _uiState.value = _uiState.value.copy(
-            signUpUsername = signUpUsername
-        )
-    }
-
-    fun setSignUpPassword(signUpPassword: String) {
-        _uiState.value = _uiState.value.copy(
-            signUpPassword = signUpPassword
-        )
-    }
-
-    fun setSignUpHobby(signUpHobby: String) {
-        _uiState.value = _uiState.value.copy(
-            signUpHobby = signUpHobby
-        )
-    }
-
-    fun changeSignUpPasswordVisibility() {
-        _uiState.value = _uiState.value.copy(
-            isSignUpPasswordVisible = !_uiState.value.isSignUpPasswordVisible
-        )
-    }
-
-    fun signUp(
-        signUpUsername: String,
-        signUpPassword: String,
-        signUpHobby: String
-    ) {
-        viewModelScope.launch {
-            signUpUseCase(
-                request = SignUpInformationEntity(
-                    username = signUpUsername,
-                    password = signUpPassword,
-                    hobby = signUpHobby
+@HiltViewModel
+class SignUpViewModel @Inject constructor(
+    private val registerUserUseCase: SignUpUseCase
+) : BaseViewModel<SignUpUiState, SignUpUiEvent, SignUpUiEffect>(SignUpUiState()) {
+    override fun reduceState(event: SignUpUiEvent) {
+        when (event) {
+            is SignUpUiEvent.UpdateUserName -> {
+                val isValid = validateUserName(event.username)
+                updateState(
+                    currentState.copy(
+                        username = event.username,
+                        isUserNameValid = isValid,
+                        isValid = isValid &&
+                                currentState.isPasswordValid &&
+                                currentState.isHobbyValid
+                    )
                 )
-            ).onSuccess { signUpResponseEntity ->
-                if (signUpResponseEntity.status == 200) {
-                    _signUpResult.value = SignUpResult.Success
-                } else if (signUpResponseEntity.code == SignUpFailureCase.FAILURE_LENGTH.errorCode
-                    && signUpResponseEntity.status == SignUpFailureCase.FAILURE_LENGTH.statusCode
-                ) {
-                    _signUpResult.value = SignUpResult.FailureInformationLength
-                } else if (signUpResponseEntity.code == SignUpFailureCase.FAILURE_DUPLICATE_USERNAME.errorCode
-                    && signUpResponseEntity.status == SignUpFailureCase.FAILURE_DUPLICATE_USERNAME.statusCode
-                ) {
-                    _signUpResult.value = SignUpResult.FailureDuplicateUsername
+            }
+
+            is SignUpUiEvent.UpdatePassword -> {
+                val isValid = validatePassword(event.password)
+                updateState(
+                    currentState.copy(
+                        password = event.password,
+                        isPasswordValid = isValid,
+                        isValid = isValid &&
+                                currentState.username.isNotBlank() &&
+                                currentState.hobby.isNotBlank()
+                    )
+                )
+            }
+
+            is SignUpUiEvent.UpdateHobby -> {
+                val isValid = validateHobby(event.hobby)
+                updateState(
+                    currentState.copy(
+                        hobby = event.hobby,
+                        isHobbyValid = isValid,
+                        isValid = isValid &&
+                                currentState.username.isNotBlank() &&
+                                currentState.password.isNotBlank()
+                    )
+                )
+            }
+
+            is SignUpUiEvent.UpdateFieldFocus -> {
+                when (event.field) {
+                    SignUpContract.Field.UserName -> updateState(
+                        currentState.copy(
+                            isUserNameFieldFocused = event.isFocused
+                        )
+                    )
+
+                    SignUpContract.Field.Password -> updateState(
+                        currentState.copy(
+                            isPasswordFieldFocused = event.isFocused
+                        )
+                    )
+
+                    SignUpContract.Field.Hobby -> updateState(
+                        currentState.copy(
+                            isHobbyFieldFocused = event.isFocused
+                        )
+                    )
+                }
+            }
+
+            is SignUpUiEvent.SignUpFormSubmit -> signUp()
+
+            is SignUpUiEvent.Close -> postEffect(SignUpUiEffect.NavigateUp)
+        }
+    }
+
+    private fun signUp() {
+        updateState(
+            currentState.copy(
+                isLoading = true
+            )
+        )
+        viewModelScope.launch {
+            when (val result = registerUserUseCase(
+                UserData(
+                    username = currentState.username,
+                    password = currentState.password,
+                    hobby = currentState.hobby
+                )
+            )) {
+                is BaseResult.Success -> {
+                    updateState(
+                        currentState.copy(
+                            isLoading = false
+                        )
+                    )
+                    postEffect(SignUpUiEffect.ShowSuccessToast)
+                    postEffect(SignUpUiEffect.NavigateToSignIn)
+                }
+
+                is BaseResult.Error -> {
+                    updateState(
+                        currentState.copy(
+                            isLoading = false,
+                            errorMessage = result.message
+                        )
+                    )
+                    postEffect(SignUpUiEffect.ShowErrorToast(result.message))
                 }
             }
         }
     }
 
-    fun confirmSignUp(
-        context: Context,
-        onSignUpComplete: () -> Unit
-    ) {
-        when (signUpResult.value) {
-            is SignUpResult.Success -> {
-                context.showToast(message = R.string.sign_up_success)
-                initSignUpResult()
-                onSignUpComplete()
-            }
+    private fun validateUserName(username: String) =
+        username.isNotBlank() && username.length <= 8
 
-            is SignUpResult.FailureDuplicateUsername -> {
-                context.showToast(message = R.string.sign_up_failed_duplicate_username)
-                initSignUpResult()
-            }
+    private fun validatePassword(password: String) =
+        password.isNotBlank() && password.length <= 8
 
-            is SignUpResult.FailureInformationLength -> {
-                context.showToast(message = R.string.sign_up_failed_information_length)
-                initSignUpResult()
-            }
-
-            else -> {}
-        }
-    }
-}
-
-data class SignUpFailureCase(
-    val statusCode: Int,
-    val errorCode: String
-) {
-    companion object {
-        val FAILURE_LENGTH = SignUpFailureCase(statusCode = 400, errorCode = "01")
-        val FAILURE_DUPLICATE_USERNAME = SignUpFailureCase(statusCode = 409, errorCode = "00")
-    }
+    private fun validateHobby(hobby: String) =
+        hobby.isNotBlank() && hobby.length <= 8
 }

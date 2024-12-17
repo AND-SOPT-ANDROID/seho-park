@@ -15,3 +15,5 @@ val Grey100 = Color(0xFF252525)
 val Grey200 = Color(0xFFa8a8a8)
 val White100 = Color(0xFFF2F2F2)
 val Blue100 = Color(0xFF4557F0)
+
+val WavveDisabled = Color(0xFF717171)

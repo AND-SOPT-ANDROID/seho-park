@@ -16,18 +16,12 @@ import org.sopt.and.presentation.util.Utils.transformationPasswordVisual
 fun SignUpPasswordField(
     signUpPassword: String,
     onSignUpPasswordChange: (String) -> Unit,
-    isSignUpPasswordVisible: Boolean,
-    onVisibilityChange: () -> Unit
 ) {
     Column {
         SignInOrSignUpTextField(
             information = signUpPassword,
             onValueChange = onSignUpPasswordChange,
             placeholder = R.string.sign_up_password_placeholder,
-            visualTransformation = transformationPasswordVisual(isSignUpPasswordVisible),
-            trailingIcon = {
-                ShowOrHideToggle(isSignUpPasswordVisible, onVisibilityChange)
-            }
         )
 
         Spacer(modifier = Modifier.height(10.dp))

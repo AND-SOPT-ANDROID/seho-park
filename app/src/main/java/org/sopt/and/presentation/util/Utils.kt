@@ -50,7 +50,7 @@ object Utils {
 
     // Show a Toast message
     fun Context.showToast(
-        @StringRes message: Int
+        @StringRes message: String
     ) = Toast.makeText(
         this,
         this.getString(message),
