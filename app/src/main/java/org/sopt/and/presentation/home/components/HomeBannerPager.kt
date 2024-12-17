@@ -28,11 +28,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.sopt.and.R
+import org.sopt.and.domain.entity.HomeContent
 import org.sopt.and.ui.theme.Grey200
 import org.sopt.and.ui.theme.White100
 
 @Composable
-fun HomeBannerPager(@DrawableRes banners: List<Int>) {
+fun HomeBannerPager(@DrawableRes banners: List<HomeContent>) {
     val pagerState = rememberPagerState(pageCount = { banners.size })
 
     HorizontalPager(

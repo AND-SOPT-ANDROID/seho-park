@@ -5,6 +5,7 @@ import org.sopt.and.data.model.request.SignUpRequestDto
 import org.sopt.and.data.model.response.MyHobbyResponseResultDto
 import org.sopt.and.data.model.response.SignInResponseDto
 import org.sopt.and.data.model.response.SignUpResponseDto
+import org.sopt.and.domain.entity.UserData
 import org.sopt.and.domain.model.MyHobbyEntity
 import org.sopt.and.domain.model.SignInInformationEntity
 import org.sopt.and.domain.model.SignInResponseEntity
@@ -34,14 +35,18 @@ object Mapper {
             )
         }
 
-    fun toSignInRequestDto(signInInformationEntity: SignInInformationEntity) = SignInRequestDto(
-        username = signInInformationEntity.username,
-        password = signInInformationEntity.password
+    fun UserData.toUserLoginRequestDto(): SignInRequestDto = SignInRequestDto(
+        username = this.username,
+        password = this.password
     )
 
-    fun toSignUpRequestDto(signUpInformationEntity: SignUpInformationEntity) = SignUpRequestDto(
-        username = signUpInformationEntity.username,
-        password = signUpInformationEntity.password,
-        hobby = signUpInformationEntity.hobby
-    )
+  fun UserData.toRegisterRequestDto(): SignUpRequestDto {
+        return SignUpRequestDto(
+            username = this.username,
+            password = this.password,
+            hobby = this.hobby
+        )
+    }
+
 }
+

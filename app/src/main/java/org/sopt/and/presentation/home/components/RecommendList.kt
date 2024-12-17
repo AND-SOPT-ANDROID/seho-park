@@ -22,16 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.sopt.and.R
+import org.sopt.and.domain.entity.HomeCommonContent
 import org.sopt.and.ui.theme.Grey200
 import org.sopt.and.ui.theme.White100
 
 @Composable
 fun RecommendList(
     title: String,
-    items: List<Int>
+    items: List<HomeCommonContent>
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 16.dp)

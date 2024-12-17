@@ -1,5 +1,6 @@
 package org.sopt.and.presentation.util
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -49,13 +50,13 @@ object Utils {
         if (isVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     // Show a Toast message
-    fun Context.showToast(
-        @StringRes message: String
-    ) = Toast.makeText(
-        this,
-        this.getString(message),
-        Toast.LENGTH_SHORT
-    ).show()
+//    fun Context.showToast(
+//        @SuppressLint("SupportAnnotationUsage") @StringRes message: String
+//    ) = Toast.makeText(
+//        this,
+//        this.getString(message),
+//        Toast.LENGTH_SHORT
+//    ).show()
 
     // Show a Snackbar message
     fun Context.showSnackbar(
@@ -66,6 +67,7 @@ object Utils {
         snackbarHostState.showSnackbar(message = getString(message))
     }
 }
+
 
 // UiState, UiEvent, and UiEffect interfaces
 interface UiState

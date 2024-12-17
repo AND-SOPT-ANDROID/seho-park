@@ -4,8 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import org.sopt.and.data.api.UserService
 import org.sopt.and.data.datasource.MyHobbyDataSource
-import org.sopt.and.data.datasource.SignInDataSource
 import org.sopt.and.data.datasource.SignUpDataSource
 import org.sopt.and.data.repositoryimpl.MyHobbyRepositoryImpl
 import org.sopt.and.data.repositoryimpl.SignInRepositoryImpl
@@ -21,13 +21,13 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideUserRegisterRepository(userService: SignUpDataSource): SignUpRepository {
+    fun provideUserRegisterRepository(userService: UserService): SignUpRepository {
         return SignUpRepositoryImpl(userService)
     }
 
     @Provides
     @Singleton
-    fun provideUserLoginRepository(userService: SignInDataSource): SignInRepository {
+    fun provideUserLoginRepository(userService: UserService): SignInRepository {
         return SignInRepositoryImpl(userService)
     }
 

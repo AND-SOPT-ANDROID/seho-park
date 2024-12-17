@@ -1,81 +1,87 @@
 package org.sopt.and.presentation.home
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import org.sopt.and.core.ContentType
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.sopt.and.R
 import org.sopt.and.presentation.home.components.HomeBannerPager
-import org.sopt.and.presentation.home.components.HomeBottomCoupon
-import org.sopt.and.presentation.home.components.HomeTopBar
 import org.sopt.and.presentation.home.components.RecommendList
 import org.sopt.and.presentation.home.components.Top20List
-import org.sopt.and.ui.theme.Grey100
 
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    innerPadding: PaddingValues
+    onContentTypeSelected: (ContentType) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val homeViewModel = viewModel<HomeViewModel>()
-    val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Grey100)
-            .padding(innerPadding)
+    val homeState by viewModel.uiState.collectAsStateWithLifecycle()
+    val mainPagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) {
+        Int.MAX_VALUE // 페이지 수가 무한대
+    }
+    LaunchedEffect(Unit) {
+        viewModel.getDummyHomeContent()
+    }
+    LazyColumn(
+        modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        HomeTopBar(genres = homeUiState.genres)
 
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            item {
-                HomeBannerPager(homeUiState.banners)
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-
-            item {
-                RecommendList(
-                    title = stringResource(R.string.home_picks_of_editor_title),
-                    items = homeUiState.recommends
-                )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-
-            item {
-                Top20List(homeUiState.rankers)
-            }
+        item {
+            HomeBannerPager(homeState.mainContents)
         }
 
-        HomeBottomCoupon()
+        item {
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        item {
+            RecommendList(
+                title = stringResource(R.string.home_picks_of_editor_title),
+                items = homeState.commonContents
+            )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        item {
+            Top20List(homeState.rankingContents)
+        }
     }
 }
 
-@Preview
+
 @Composable
-fun HomeScreenPreview() {
-    Scaffold { innerPadding ->
-        HomeScreen(innerPadding = innerPadding)
+fun AutoScrollEffect(pagerState: PagerState) {
+    LaunchedEffect(pagerState.currentPage) {
+        while (true) {
+            delay(3000)
+            withContext(NonCancellable) {
+                pagerState.animateScrollToPage(
+                    page = pagerState.currentPage + 1,
+                    animationSpec = spring(stiffness = Spring.StiffnessLow)
+                )
+            }
+        }
     }
 }

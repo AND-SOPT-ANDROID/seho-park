@@ -23,10 +23,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.sopt.and.R
+import org.sopt.and.domain.entity.HomeCommonContent
 import org.sopt.and.ui.theme.White100
 
 @Composable
-fun Top20List(@DrawableRes rankers: List<Int>) {
+fun Top20List(@DrawableRes rankers: HomeCommonContent) {
     Column(
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
