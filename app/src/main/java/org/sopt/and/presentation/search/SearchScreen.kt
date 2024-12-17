@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SearchScreen() {
+fun SearchScreen(modifier: Modifier) {
     Box(
         modifier = Modifier
             .fillMaxSize()

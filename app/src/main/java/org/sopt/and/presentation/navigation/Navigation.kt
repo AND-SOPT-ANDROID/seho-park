@@ -18,6 +18,7 @@ import org.sopt.and.presentation.search.SearchScreen
 import org.sopt.and.presentation.signin.SignInScreen
 import org.sopt.and.presentation.signup.SignUpScreen
 import org.sopt.and.presentation.viewmodelfactory.MyInfoViewModelFactory
+import org.sopt.and.ui.theme.WavveBg
 
 @Composable
 fun Navigation(
@@ -88,7 +89,7 @@ fun Navigation(
             }
 
             composable<Routes.Search> {
-                SearchScreen()
+                SearchScreen(Modifier.Companion.background(WavveBg))
             }
         }
     }
