@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 val properties = Properties().apply {
@@ -13,7 +15,7 @@ val properties = Properties().apply {
 
 android {
     namespace = "org.sopt.and"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "org.sopt.and"
@@ -36,11 +38,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17 //윈도우에서 hilt 사용 시 java 1.8은 에러가 발생하는 이슈가 있다고함 -> 17 사용 시 해결
+        targetCompatibility = JavaVersion.VERSION_17 //윈도우에서 hilt 사용 시 java 1.8은 에러가 발생하는 이슈가 있다고함 -> 17 사용 시 해결
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17" //윈도우에서 hilt 사용 시 java 1.8은 에러가 발생하는 이슈가 있다고함 -> 17 사용 시 해결
     }
     buildFeatures {
         compose = true
@@ -49,6 +51,7 @@ android {
 }
 
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -57,19 +60,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.lifecycle.viewmodel.compose)
-    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.compose.navigation)
-    implementation(libs.androidx.runtime.livedata)
-
-    // network
-    implementation(platform(libs.okhttp.bom))
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.kotlin.serialization.converter)
-
-    implementation(libs.androidx.datastore.preferences)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -77,4 +69,22 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //viewmodel
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
+
+    // Network
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.kotlin.serialization.converter)
+    implementation(libs.kotlinx.serialization.json)
+
+    // hilt
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
 }
