@@ -5,10 +5,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
-
 
 val properties = Properties().apply {
     load(project.rootProject.file("local.properties").inputStream())
@@ -39,11 +38,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17 //윈도우에서 hilt 사용 시 java 1.8은 에러가 발생하는 이슈가 있다고함 -> 17 사용 시 해결
+        targetCompatibility = JavaVersion.VERSION_17 //윈도우에서 hilt 사용 시 java 1.8은 에러가 발생하는 이슈가 있다고함 -> 17 사용 시 해결
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17" //윈도우에서 hilt 사용 시 java 1.8은 에러가 발생하는 이슈가 있다고함 -> 17 사용 시 해결
     }
     buildFeatures {
         compose = true
@@ -61,8 +60,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.navigation.runtime.ktx)
-    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.compose.navigation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -70,9 +69,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.material)
+
+    //viewmodel
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
+
     // Network
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
@@ -80,12 +80,11 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlin.serialization.converter)
     implementation(libs.kotlinx.serialization.json)
-    //hilt
-    implementation(libs.hilt.android.v2511)
-    kapt(libs.hilt.compiler.v2511)
-    implementation(libs.androidx.hilt.navigation.compose)
-}
 
-kapt {
-    correctErrorTypes = true
+    // hilt
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
 }
